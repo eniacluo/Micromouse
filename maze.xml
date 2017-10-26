@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Scenario>
+  <NetworkPlan>
+    <NetworkDefinition id="5" name="wlan5" type="WlanNode">
+      <model name="basic_range" type="wireless">
+        <range>1500.0</range>
+        <bandwidth>54000000</bandwidth>
+        <jitter>0</jitter>
+        <delay>20000</delay>
+        <error>0</error>
+      </model>
+    </NetworkDefinition>
+    <Node id="1" name="n1" type="mdr">
+      <interface name="eth0" net="wlan5">
+        <address type="mac">00:00:00:aa:00:04</address>
+        <address>10.0.0.1/32</address>
+        <address>2001::1/128</address>
+      </interface>
+      <param name="icon" value="/home/zhiwei/Micromouse/icons/robotyel.png"/>
+    </Node>
+    <Node id="2" name="n2" type="mdr">
+      <interface name="eth0" net="wlan5">
+        <address type="mac">00:00:00:aa:00:05</address>
+        <address>10.0.0.2/32</address>
+        <address>2001::2/128</address>
+      </interface>
+      <param name="icon" value="/home/zhiwei/Micromouse/icons/robotblu.png"/>
+    </Node>
+    <Node id="3" name="n3" type="mdr">
+      <interface name="eth0" net="wlan5">
+        <address type="mac">00:00:00:aa:00:06</address>
+        <address>10.0.0.3/32</address>
+        <address>2001::3/128</address>
+      </interface>
+      <param name="icon" value="/home/zhiwei/Micromouse/icons/robotpur.png"/>
+    </Node>
+    <Node id="4" name="n4" type="mdr">
+      <interface name="eth0" net="wlan5">
+        <address type="mac">00:00:00:aa:00:07</address>
+        <address>10.0.0.4/32</address>
+        <address>2001::4/128</address>
+      </interface>
+      <param name="icon" value="/home/zhiwei/Micromouse/icons/robotgre.png"/>
+    </Node>
+  </NetworkPlan>
+  <MotionPlan>
+    <Node name="wlan5">
+      <motion type="stationary">
+        <point>583,382</point>
+      </motion>
+    </Node>
+    <Node name="n1">
+      <motion type="stationary">
+        <point>42,25</point>
+      </motion>
+    </Node>
+    <Node name="n2">
+      <motion type="stationary">
+        <point>1122,25</point>
+      </motion>
+    </Node>
+    <Node name="n3">
+      <motion type="stationary">
+        <point>42,745</point>
+      </motion>
+    </Node>
+    <Node name="n4">
+      <motion type="stationary">
+        <point>1122,745</point>
+      </motion>
+    </Node>
+  </MotionPlan>
+  <ServicePlan/>
+  <CoreMetaData>
+    <SessionOptions>
+      <param name="controlnet">10.0.0.255/24</param>
+    </SessionOptions>
+    <MetaData>
+      <param name="global_options">interface_names=no ip_addresses=yes ipv6_addresses=yes node_labels=yes link_labels=yes show_api=no background_images=no annotations=yes grid=no traffic_start=0</param>
+      <param name="canvas c1">{name {Canvas1}} {wallpaper-style {scaled}} {wallpaper {/home/zhiwei/Micromouse/mazes/2012japan-ef.png}} {size {1158 772}}</param>
+    </MetaData>
+  </CoreMetaData>
+</Scenario>
