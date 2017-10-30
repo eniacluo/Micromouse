@@ -34,7 +34,7 @@ class Cell:
 
 	# For Testing
 	def getWhichIsWall(self):
-		whichIsWall = '[Wall]'
+		whichIsWall = '[x=' + str(self.x) + ' y=' + str(self.y) + ']'
 		if self.hasTopWall:
 			whichIsWall += 'Top '
 
