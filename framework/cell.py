@@ -5,7 +5,7 @@
 class Cell:
 	x = -1
 	y = -1
-	hasTopWall = False
+	hasUpWall = False
 	hasDownWall = False
 	hasLeftWall = False
 	hasRightWall = False
@@ -14,8 +14,8 @@ class Cell:
 		self.x = x
 		self.y = y
 
-	def setTopAsWall(self):
-		self.hasTopWall = True
+	def setUpAsWall(self):
+		self.hasUpWall = True
 
 	def setLeftAsWall(self):
 		self.hasLeftWall = True
@@ -27,7 +27,7 @@ class Cell:
 		self.hasDownWall = True
 
 	def setAllAsNoWall(self):
-		self.hasTopWall = False
+		self.hasUpWall = False
 		self.hasDownWall = False
 		self.hasLeftWall = False
 		self.hasRightWall = False
@@ -35,8 +35,8 @@ class Cell:
 	# For Testing
 	def getWhichIsWall(self):
 		whichIsWall = '[x=' + str(self.x) + ' y=' + str(self.y) + ']'
-		if self.hasTopWall:
-			whichIsWall += 'Top '
+		if self.hasUpWall:
+			whichIsWall += 'Up '
 
 		if self.hasDownWall:
 			whichIsWall += 'Down '

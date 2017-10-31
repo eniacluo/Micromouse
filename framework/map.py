@@ -25,36 +25,8 @@ class Map:
 		else:
 			return None
 
-	def setCellTopAsWall(self, cell):
-		if cell != None:
-			cell.setTopAsWall()
-			cellTop = self.getTopCell(cell)
-			if cellTop != None:
-				cellTop.setDownAsWall()
-
-	def setCellDownAsWall(self, cell):
-		if cell != None:
-			cell.setDownAsWall()
-			cellDown = self.getDownCell(cell)
-			if cellDown != None:
-				cellDown.setTopAsWall()
-
-	def setCellLeftAsWall(self, cell):
-		if cell != None:
-			cell.setLeftAsWall()
-			cellLeft = self.getLeftCell(cell)
-			if cellLeft != None:
-				cellLeft.setRightAsWall()
-
-	def setCellRightAsWall(self, cell):
-		if cell != None:
-			cell.setRightAsWall()
-			cellRight = self.getRightCell(cell)
-			if cellRight != None:
-				cellRight.setLeftAsWall()
-
-	def getCellTopWall(self, cell):
-		return cell.hasTopWall
+	def getCellUpWall(self, cell):
+		return cell.hasUpWall
 
 	def getCellDownWall(self, cell):
 		return cell.hasDownWall
@@ -71,16 +43,39 @@ class Map:
 	def getLeftCell(self, cell):
 		return self.getCell(cell.x - 1, cell.y)
 
-	def getTopCell(self, cell):
+	def getUpCell(self, cell):
 		return self.getCell(cell.x, cell.y - 1)
 
 	def getDownCell(self, cell):
 		return self.getCell(cell.x, cell.y + 1)
 
-	def clearAllCells(self):
-		for i in range(self.height):
-			for j in range(self.width):
-				self.getCell(i, j).setAllAsNoWall()
+	def setCellUpAsWall(self, cell):
+		if cell != None:
+			cell.setUpAsWall()
+			cellUp = self.getUpCell(cell)
+			if cellUp != None:
+				cellUp.setDownAsWall()
+
+	def setCellDownAsWall(self, cell):
+		if cell != None:
+			cell.setDownAsWall()
+			cellDown = self.getDownCell(cell)
+			if cellDown != None:
+				cellDown.setUpAsWall()
+
+	def setCellLeftAsWall(self, cell):
+		if cell != None:
+			cell.setLeftAsWall()
+			cellLeft = self.getLeftCell(cell)
+			if cellLeft != None:
+				cellLeft.setRightAsWall()
+
+	def setCellRightAsWall(self, cell):
+		if cell != None:
+			cell.setRightAsWall()
+			cellRight = self.getRightCell(cell)
+			if cellRight != None:
+				cellRight.setLeftAsWall()
 
 	def readFromFile(self, mazeFile):
 		try:
@@ -94,13 +89,13 @@ class Map:
 					y = 2 * i + 1
 					cell = self.getCell(j, i)
 					cellLeftStr = mazeLine[y][x-1]
-					cellTopStr = mazeLine[y-1][x]
+					cellUpStr = mazeLine[y-1][x]
 					cellRightStr = mazeLine[y][x+1]
 					cellDownStr = mazeLine[y+1][x]
 					if cellLeftStr == '|':
 						self.setCellLeftAsWall(cell)
-					if cellTopStr == '-':
-						self.setCellTopAsWall(cell)
+					if cellUpStr == '-':
+						self.setCellUpAsWall(cell)
 					if cellRightStr == '|':
 						self.setCellRightAsWall(cell)
 					if cellDownStr == '-':
@@ -109,7 +104,13 @@ class Map:
 		except:
 			print('Open Maze File Error!')
 
-class MapDrawer:
+	def clearAllCells(self):
+		for i in range(self.height):
+			for j in range(self.width):
+				self.getCell(i, j).setAllAsNoWall()
+
+
+class MapPainter:
 	height = 0
 	width = 0
 	mapDraw = None
@@ -147,23 +148,23 @@ class MapDrawer:
 			for j in range(self.mapDraw.width):
 				self.drawCell(self.mapDraw.getCell(j, i))
 
-	def drawCell(self, cell):
+	def drawCell(self, cell, color='white'):
 		if cell != None:
-			leftTopX = cell.x * self.width
-			leftTopY = cell.y * self.height
+			leftUpX = cell.x * self.width
+			leftUpY = cell.y * self.height
 			leftDownX = cell.x * self.width
 			leftDownY = (cell.y + 1) * self.height
-			rightTopX = (cell.x + 1) * self.width
-			rightTopY = cell.y * self.height
+			rightUpX = (cell.x + 1) * self.width
+			rightUpY = cell.y * self.height
 			rightDownX = (cell.x + 1) * self.width
 			rightDownY = (cell.y + 1) * self.height
-			self.canvas.create_rectangle(leftTopX, leftTopY, rightDownX, rightDownY, fill='white', outline='white')
+			self.canvas.create_rectangle(leftUpX, leftUpY, rightDownX, rightDownY, fill=color, outline='white')
 			if cell.hasLeftWall:
-				self.canvas.create_line(leftTopX, leftTopY, leftDownX, leftDownY, fill='black',width=3)
+				self.canvas.create_line(leftUpX, leftUpY, leftDownX, leftDownY, fill='black',width=3)
 			if cell.hasRightWall:
-				self.canvas.create_line(rightTopX, rightTopY, rightDownX, rightDownY, fill='black',width=3)
-			if cell.hasTopWall:
-				self.canvas.create_line(leftTopX, leftTopY, rightTopX, rightTopY, fill='black',width=3)
+				self.canvas.create_line(rightUpX, rightUpY, rightDownX, rightDownY, fill='black',width=3)
+			if cell.hasUpWall:
+				self.canvas.create_line(leftUpX, leftUpY, rightUpX, rightUpY, fill='black',width=3)
 			if cell.hasDownWall:
 				self.canvas.create_line(leftDownX, leftDownY, rightDownX, rightDownY, fill='black',width=3)
 			self.canvas.update()
@@ -175,9 +176,9 @@ class MapDrawer:
 	def putRobotInCell(self, cell, color='red', border=10):
 		if cell != None:
 			self.drawCell(cell)
-			leftTopX = cell.x * self.width + border
-			leftTopY = cell.y * self.height + border
+			leftUpX = cell.x * self.width + border
+			leftUpY = cell.y * self.height + border
 			rightDownX = (cell.x + 1) * self.width - border
 			rightDownY = (cell.y + 1) * self.height - border
-			self.canvas.create_rectangle(leftTopX, leftTopY, rightDownX, rightDownY, fill=color, outline='white')
+			self.canvas.create_rectangle(leftUpX, leftUpY, rightDownX, rightDownY, fill=color, outline='white')
 			self.canvas.update()
