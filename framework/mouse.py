@@ -66,6 +66,18 @@ class Micromouse:
 	def getCurrentCell(self):
 		return self.mazeMap.getCell(self.x, self.y)
 
+	def canGoLeft(self):
+		return self.mouse.mazeMap.getCellLeftWall(self.mouse.getCurrentCell())
+
+	def canGoRight(self):
+		return self.mouse.mazeMap.getCellRightWall(self.mouse.getCurrentCell())
+
+	def canGoUp(self):
+		return self.mouse.mazeMap.getCellUpWall(self.mouse.getCurrentCell())
+
+	def canGoDown(self):
+		return self.mouse.mazeMap.getCellDownWall(self.mouse.getCurrentCell())
+
 	def goLeft(self):
 		if not self.mazeMap.getCellLeftWall(self.getCurrentCell()):
 			self.commandTranslator.goLeft()
