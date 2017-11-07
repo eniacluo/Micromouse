@@ -3,7 +3,9 @@
 # Author: Zhiwei Luo
 
 from hardware import MotorController, SensorController
-
+from socket import *
+import _pickle as pickle
+import threading
 
 class TaskLoader:
     taskList = []
@@ -62,39 +64,36 @@ class CommandTranslator:
         print('Go Right')
         if self.motorController != None:
             if not self.mouse.isTowardingRight():
-                self.motorController.turnAround()
-            elif self.mouse.isTowardingUp():
-                self.motorController.turnRight()
-            elif self.mouse.isTowardingRight():
-                pass
-            elif self.mouse.isTowardingDown():
-                self.motorController.turnLeft()
+                if self.mouse.isTowardingUp():
+                    self.motorController.turnRight()
+                if self.mouse.isTowardingLeft():
+                    self.motorController.turnAround()
+                if self.mouse.isTowardingDown():
+                    self.motorController.turnLeft()
             self.motorController.goStraight()
 
     def goUp(self):
         print('Go Up')
         if self.motorController != None:
             if not self.mouse.isTowardingUp():
-                self.motorController.turnRight()
-            elif self.mouse.isTowardingUp():
-                pass
-            elif self.mouse.isTowardingRight():
-                self.motorController.turnleft()
-            elif self.mouse.isTowardingDown():
-                self.motorController.turnAround()
+                if self.mouse.isTowardingRight():
+                    self.motorController.turnLeft()
+                if self.mouse.isTowardingDown():
+                    self.motorController.turnAround()
+                if self.mouse.isTowardingLeft():
+                    self.motorController.turnRight()
             self.motorController.goStraight()
 
     def goDown(self):
         print('Go Down')
         if self.motorController != None:
             if not self.mouse.isTowardingDown():
-                self.motorController.turnLeft()
-            elif self.mouse.isTowardingUp():
-                self.motorController.turnAround()
-            elif self.mouse.isTowardingRight():
-                self.motorController.turnRight()
-            elif self.mouse.isTowardingDown():
-                pass
+                if self.mouse.isTowardingLeft():
+                    self.motorController.turnLeft()
+                if self.mouse.isTowardingUp():
+                    self.motorController.turnAround()
+                if self.mouse.isTowardingRight():
+                    self.motorController.turnRight()
             self.motorController.goStraight()
 
 class WallDetector:
@@ -162,5 +161,68 @@ class WallDetector:
                 self.mouse.mazeMap.setCellDownAsWall(cell)
 
 class NetworkInterface:
-    def Establish(self):
-        pass
+    udpPort = 6666
+    socketUdp = None
+    isBufferFull = False
+    contextMouse = None
+    receiveBuffer = None
+    receiveAddr = None
+    broadcastAddr = None
+    myIPAddr = None
+    bufferList = []
+    threadReceive = None
+
+    def __init__(self, context=None):
+        self.contextMouse = context
+
+    def initSocket(self, port=udpPort):
+        self.socketUdp = socket(AF_INET, SOCK_DGRAM)
+        self.myIPAddr = gethostbyname(gethostname())
+        network = self.myIPAddr.split('.')[0:3];network.append('255')
+        self.broadcastAddr = '.'.join(network)
+        self.socketUdp.bind(('', self.udpPort))
+        self.setBroadcastEnable()
+
+    def setBroadcastEnable(self):
+        self.socketUdp.setsockopt(SOL_SOCKET, SO_BROADCAST, 1)
+
+    def setBlocking(self, block):
+        self.socketUdp.setBlocking(block)
+
+    def setTimeout(self, seconds):
+        self.socketUdp.settimeout(seconds)
+
+    def receiveData(self):
+        #while not self.contextMouse.isEndNetwork:
+        try:
+            str, addr = self.socketUdp.recvfrom(1000)
+            self.bufferList.append((str, addr))
+            return (str, addr)
+        except:
+            print('Receive Data Failed!')
+            return None
+
+    def retrieveData(self):
+        if len(self.bufferList) > 0:
+            recvData = self.bufferList[0]
+            self.bufferList = self.bufferList[1:]
+            return pickle.loads(recvData)
+        else:
+            return None
+
+    def receiveDataThread(self):
+        #while not self.contextMouse.isEndNetwork:
+        while True:
+            str, addr = self.socketUdp.recvfrom(1000)
+            self.bufferList.append(str)
+
+    def startReceiveThread(self):
+        self.threadReceive = threading.Thread(name='receive', target=self.receiveDataThread)
+        self.threadReceive.setDaemon(True)
+        self.threadReceive.start()
+
+    def sendStringData(self, str):
+        try:
+            self.socketUdp.sendto(pickle.dumps(str), (self.broadcastAddr, self.udpPort))
+        except:
+            print('Send Data Failed!')

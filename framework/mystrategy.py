@@ -2,7 +2,7 @@
 
 #Author: Zhiwei Luo
 
-from task import Strategy
+from task import Strategy, NetworkInterface
 from time import sleep
 
 class StrategyTestProgress(Strategy):
@@ -64,7 +64,7 @@ class StrategyTestDFS(Strategy):
 		self.mouse = mouse
 		self.mapPainter = mapPainter
 		self.isVisited = [[0 for i in range(self.mouse.mazeMap.width)] for j in range(self.mouse.mazeMap.height)]
-		self.isVisited[0][0] = 1
+		self.isVisited[self.mouse.x][self.mouse.y] = 1
 
 	def checkFinished(self):
 		return self.isBack
@@ -73,19 +73,19 @@ class StrategyTestDFS(Strategy):
 		cell = self.mouse.mazeMap.getCell(self.mouse.x, self.mouse.y)
 		self.mapPainter.drawCell(cell, 'grey')
 
-		if not self.mouse.mazeMap.getCellLeftWall(self.mouse.getCurrentCell()) and not self.isVisited[self.mouse.x-1][self.mouse.y]:
+		if not self.mouse.canGoLeft() and not self.isVisited[self.mouse.x-1][self.mouse.y]:
 			self.path.append([self.mouse.x, self.mouse.y])
 			self.isVisited[self.mouse.x-1][self.mouse.y] = 1
 			self.mouse.goLeft()
-		elif not self.mouse.mazeMap.getCellUpWall(self.mouse.getCurrentCell()) and not self.isVisited[self.mouse.x][self.mouse.y-1]:
+		elif not self.mouse.canGoUp() and not self.isVisited[self.mouse.x][self.mouse.y-1]:
 			self.path.append([self.mouse.x, self.mouse.y])
 			self.isVisited[self.mouse.x][self.mouse.y-1] = 1
 			self.mouse.goUp()
-		elif not self.mouse.mazeMap.getCellRightWall(self.mouse.getCurrentCell()) and not self.isVisited[self.mouse.x+1][self.mouse.y]:
+		elif not self.mouse.canGoRight() and not self.isVisited[self.mouse.x+1][self.mouse.y]:
 			self.path.append([self.mouse.x, self.mouse.y])
 			self.isVisited[self.mouse.x+1][self.mouse.y] = 1
 			self.mouse.goRight()
-		elif not self.mouse.mazeMap.getCellDownWall(self.mouse.getCurrentCell()) and not self.isVisited[self.mouse.x][self.mouse.y+1]:
+		elif not self.mouse.canGoDown() and not self.isVisited[self.mouse.x][self.mouse.y+1]:
 			self.path.append([self.mouse.x, self.mouse.y])
 			self.isVisited[self.mouse.x][self.mouse.y+1] = 1
 			self.mouse.goDown()
@@ -107,3 +107,83 @@ class StrategyTestDFS(Strategy):
 		self.mapPainter.putRobotInCell(cell)
 		sleep(0.05)
 		
+
+class StrategyTestMultiDFS(Strategy):
+	mouse = None
+	mapPainter = None
+	isVisited = []
+	path = []
+	isBack = False
+	network = None
+
+	def __init__(self, mouse, mapPainter):
+		self.mouse = mouse
+		self.mapPainter = mapPainter
+		self.isVisited = [[0 for i in range(self.mouse.mazeMap.width)] for j in range(self.mouse.mazeMap.height)]
+		self.isVisited[self.mouse.x][self.mouse.y] = 1
+		self.network = NetworkInterface()
+		self.network.initSocket()
+		self.network.startReceiveThread()
+
+	def checkFinished(self):
+		return self.isBack
+
+	def go(self):
+		cell = self.mouse.mazeMap.getCell(self.mouse.x, self.mouse.y)
+		#self.mapPainter.drawCell(cell, 'grey')
+		sendData = {'x': self.mouse.x, 'y':self.mouse.y, 'up':self.mouse.canGoUp(), 'down':self.mouse.canGoDown(), 'left':self.mouse.canGoLeft(), 'right':self.mouse.canGoRight()}
+		self.network.sendStringData(sendData)
+		recvData = self.network.retrieveData()
+		while recvData:
+			otherMap = recvData
+			cell = self.mouse.mazeMap.getCell(otherMap['x'], otherMap['y'])
+			self.isVisited[otherMap['x']][otherMap['y']] = 1
+			if otherMap['up']: self.mouse.mazeMap.setCellUpAsWall(cell)
+			if otherMap['down']: self.mouse.mazeMap.setCellDownAsWall(cell)
+			if otherMap['left']: self.mouse.mazeMap.setCellLeftAsWall(cell)
+			if otherMap['right']: self.mouse.mazeMap.setCellRightAsWall(cell)
+			#self.mapPainter.drawCell(cell, 'grey')
+			recvData = self.network.retrieveData()
+
+		import os
+		os.system('clear')
+		for i in range(self.mouse.mazeMap.height):
+			for j in range(self.mouse.mazeMap.width):
+				if self.isVisited[j][i]: 
+					print('*', end='')
+				else:
+					print(' ', end='')
+			print('')
+		if not self.mouse.canGoLeft() and not self.isVisited[self.mouse.x-1][self.mouse.y]:
+			self.path.append([self.mouse.x, self.mouse.y])
+			self.isVisited[self.mouse.x-1][self.mouse.y] = 1
+			self.mouse.goLeft()
+		elif not self.mouse.canGoUp() and not self.isVisited[self.mouse.x][self.mouse.y-1]:
+			self.path.append([self.mouse.x, self.mouse.y])
+			self.isVisited[self.mouse.x][self.mouse.y-1] = 1
+			self.mouse.goUp()
+		elif not self.mouse.canGoRight() and not self.isVisited[self.mouse.x+1][self.mouse.y]:
+			self.path.append([self.mouse.x, self.mouse.y])
+			self.isVisited[self.mouse.x+1][self.mouse.y] = 1
+			self.mouse.goRight()
+		elif not self.mouse.canGoDown() and not self.isVisited[self.mouse.x][self.mouse.y+1]:
+			self.path.append([self.mouse.x, self.mouse.y])
+			self.isVisited[self.mouse.x][self.mouse.y+1] = 1
+			self.mouse.goDown()
+		else:
+			if len(self.path) != 0:
+				x, y = self.path.pop()
+				if x < self.mouse.x:
+					self.mouse.goLeft()
+				elif x > self.mouse.x:
+					self.mouse.goRight()
+				elif y < self.mouse.y:
+					self.mouse.goUp()
+				elif y > self.mouse.y:
+					self.mouse.goDown()
+			else:
+				self.isBack = True
+
+		cell = self.mouse.mazeMap.getCell(self.mouse.x, self.mouse.y)
+		#self.mapPainter.putRobotInCell(cell)
+		sleep(1)

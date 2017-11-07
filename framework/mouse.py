@@ -12,7 +12,6 @@ class Micromouse:
 	commandTranslator = None
 	wallDetector = None
 	direction = 'UP'
-	isVisited = None
 
 	def __init__(self, mazeMap):
 		self.initMap(mazeMap)
@@ -21,12 +20,12 @@ class Micromouse:
 		self.initWallDetector()
 
 	def setInitPoint(self, x, y):
-		if self.x >= 0 and self.x < self.mazeMap.width:
+		if x >= 0 and x < self.mazeMap.width:
 			self.x = x
 		else:
 			self.x = 0
 
-		if self.y >= 0 and self.y < self.mazeMap.height:
+		if y >= 0 and y < self.mazeMap.height:
 			self.y = y
 		else:
 			self.y = 0
@@ -67,37 +66,37 @@ class Micromouse:
 		return self.mazeMap.getCell(self.x, self.y)
 
 	def canGoLeft(self):
-		return self.mouse.mazeMap.getCellLeftWall(self.mouse.getCurrentCell())
+		return self.mazeMap.getCellLeftWall(self.getCurrentCell())
 
 	def canGoRight(self):
-		return self.mouse.mazeMap.getCellRightWall(self.mouse.getCurrentCell())
+		return self.mazeMap.getCellRightWall(self.getCurrentCell())
 
 	def canGoUp(self):
-		return self.mouse.mazeMap.getCellUpWall(self.mouse.getCurrentCell())
+		return self.mazeMap.getCellUpWall(self.getCurrentCell())
 
 	def canGoDown(self):
-		return self.mouse.mazeMap.getCellDownWall(self.mouse.getCurrentCell())
+		return self.mazeMap.getCellDownWall(self.getCurrentCell())
 
 	def goLeft(self):
-		if not self.mazeMap.getCellLeftWall(self.getCurrentCell()):
+		if not self.canGoLeft():
 			self.commandTranslator.goLeft()
 			self.x = self.x - 1
 			self.direction = 'LEFT'
 
 	def goRight(self):
-		if not self.mazeMap.getCellRightWall(self.getCurrentCell()):
+		if not self.canGoRight():
 			self.x = self.x + 1
 			self.commandTranslator.goRight()
 			self.direction = 'RIGHT'
 
 	def goUp(self):
-		if not self.mazeMap.getCellUpWall(self.getCurrentCell()):
+		if not self.canGoUp():
 			self.y = self.y - 1
 			self.commandTranslator.goUp()
 			self.direction = 'UP'
 
 	def goDown(self):
-		if not self.mazeMap.getCellDownWall(self.getCurrentCell()):
+		if not self.canGoDown():
 			self.y = self.y + 1
 			self.commandTranslator.goDown()
 			self.direction = 'DOWN'

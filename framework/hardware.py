@@ -27,5 +27,3 @@ class SensorController:
 
 	def senseBack(self):
 		return False
-
-

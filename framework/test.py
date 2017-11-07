@@ -4,9 +4,11 @@
 
 from map import Map, MapPainter
 from tkinter import *
-from mystrategy import StrategyTestProgress, StrategyTestCount, StrategyTestGoDown, StrategyTestDFS
+from mystrategy import StrategyTestProgress, StrategyTestCount, StrategyTestGoDown, StrategyTestDFS, StrategyTestMultiDFS
 from mouse import Micromouse
 import threading
+from task import CommandTranslator, NetworkInterface
+from hardware import COREController
 
 def TestMapAndCell():
 	mapManager = Map(10, 10, 0, 0)
@@ -111,10 +113,64 @@ def TestStrategyDFS():
 	micromouse.addTask(StrategyTestDFS(micromouse, mapPainter))
 	micromouse.run()
 
+def TestInterface():
+	networkInterface = NetworkInterface()
+	networkInterface.initSocket()
+	import sys
+	import _pickle as pickle
+	import time
+	if sys.argv[1] == 'r':
+		networkInterface.startReceiveThread()
+		c = 0
+		while c < 10:
+			recv = networkInterface.retrieveData()
+			if recv:
+				print(type(pickle.loads(recv)), pickle.loads(recv))
+			time.sleep(1)
+			c += 1
+
+	if sys.argv[1] == 's':
+		networkInterface.sendStringData()
+
+def TestStrategyMultiDFS():
+	mazeMap = Map(16, 16, 40, 40)
+	mazeMap.readFromFile('/home/zhiwei/Micromouse/mazes/2009japanb.txt')
+	mapPainter = MapPainter(mazeMap)
+	#mapPainter.createWindow()
+	#mapPainter.drawMap()
+	#mapPainter.putRobotInCell(mazeMap.getCell(0, 0), 'yellow')
+	micromouse = Micromouse(mazeMap)
+	import sys
+	if sys.argv[1] == '0':
+		micromouse.setInitPoint(0, 0)
+	if sys.argv[1] == '1':
+		micromouse.setInitPoint(15, 0)
+	micromouse.addTask(StrategyTestMultiDFS(micromouse, mapPainter))
+	micromouse.run()
+
+class myMouse(Micromouse):
+	def initCommandTranslator(self):
+		self.commandTranslator = CommandTranslator(self, COREController())
+
+def TestStrategyInCORE():
+	mazeMap = Map(16, 16, 40, 40)
+	mazeMap.readFromFile('/home/zhiwei/Micromouse/mazes/2012japan-ef.txt')
+	mapPainter = MapPainter(mazeMap)
+	#mapPainter.createWindow()
+	#mapPainter.drawMap()
+	#mapPainter.putRobotInCell(mazeMap.getCell(0, 0), 'yellow')
+	micromouse = myMouse(mazeMap)
+	micromouse.setInitPoint(0, 0)
+	micromouse.addTask(StrategyTestMultiDFS(micromouse, mapPainter))
+	micromouse.run()
+
 #TestMapAndCell()
 #TestMapPainter()
 #TestMapReader()
 #TestUpdateMap()
 #TestStrategyGo()
 #TestStrategyGoDown()
-TestStrategyDFS()
+#TestStrategyDFS()
+#TestInterface()
+#TestStrategyMultiDFS()
+TestStrategyInCORE()
