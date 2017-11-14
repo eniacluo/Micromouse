@@ -186,4 +186,4 @@ class StrategyTestMultiDFS(Strategy):
 
 		cell = self.mouse.mazeMap.getCell(self.mouse.x, self.mouse.y)
 		#self.mapPainter.putRobotInCell(cell)
-		sleep(1)
+		sleep(0.2)

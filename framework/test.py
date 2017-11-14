@@ -8,7 +8,8 @@ from mystrategy import StrategyTestProgress, StrategyTestCount, StrategyTestGoDo
 from mouse import Micromouse
 import threading
 from task import CommandTranslator, NetworkInterface
-from hardware import COREController
+from myhardware import COREController
+from socket import *
 
 def TestMapAndCell():
 	mapManager = Map(10, 10, 0, 0)
@@ -148,10 +149,6 @@ def TestStrategyMultiDFS():
 	micromouse.addTask(StrategyTestMultiDFS(micromouse, mapPainter))
 	micromouse.run()
 
-class myMouse(Micromouse):
-	def initCommandTranslator(self):
-		self.commandTranslator = CommandTranslator(self, COREController())
-
 def TestStrategyInCORE():
 	mazeMap = Map(16, 16, 40, 40)
 	mazeMap.readFromFile('/home/zhiwei/Micromouse/mazes/2012japan-ef.txt')
@@ -159,8 +156,12 @@ def TestStrategyInCORE():
 	#mapPainter.createWindow()
 	#mapPainter.drawMap()
 	#mapPainter.putRobotInCell(mazeMap.getCell(0, 0), 'yellow')
-	micromouse = myMouse(mazeMap)
-	micromouse.setInitPoint(0, 0)
+	micromouse = Micromouse(mazeMap)
+	myIPAddr = gethostbyname(gethostname())
+	index = myIPAddr.split('.')[3]
+	initPoint = {'1':(0,0), '2':(15,0), '3':(0,15), '4':(15,15)}
+	micromouse.commandTranslator = CommandTranslator(micromouse, COREController(index, initPoint[index]))
+	micromouse.setInitPoint(initPoint[index][0], initPoint[index][1])
 	micromouse.addTask(StrategyTestMultiDFS(micromouse, mapPainter))
 	micromouse.run()
 

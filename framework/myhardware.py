@@ -3,11 +3,22 @@
 #Author: Zhiwei Luo
 
 import os
+from hardware import MotorController
+
+CORE_CELL_WIDTH = 72
+CORE_CELL_HEIGHT = 48
 
 class COREController(MotorController):
+    
     direction = 'up'
     xpos = 42
     ypos = 25
+    index = -1
+
+    def __init__(self, index, initPoint):
+        self.index = index
+        self.xpos += initPoint[0] * CORE_CELL_WIDTH
+        self.ypos += initPoint[1] * CORE_CELL_HEIGHT
 
     def turnLeft(self):
         print('Turn Left')
@@ -45,12 +56,12 @@ class COREController(MotorController):
     def goStraight(self):
         print('direction: ' + self.direction)
         if self.direction == 'up':
-            self.ypos -= 48
+            self.ypos -= CORE_CELL_HEIGHT
         elif self.direction == 'down':
-            self.ypos += 48
+            self.ypos += CORE_CELL_HEIGHT
         elif self.direction == 'left':
-            self.xpos -= 72
+            self.xpos -= CORE_CELL_WIDTH
         else:
-            self.xpos += 72
-        print("coresendmsg -a 10.0.0.254 node number=1 xpos="+str(self.xpos)+" ypos="+str(self.ypos))
-        os.system("coresendmsg -a 10.0.0.254 node number=1 xpos="+str(self.xpos)+" ypos="+str(self.ypos))
+            self.xpos += CORE_CELL_WIDTH
+        print("coresendmsg -a 10.0.0.254 node number=" + self.index + " xpos=" + str(self.xpos) + " ypos=" + str(self.ypos))
+        os.system("coresendmsg -a 10.0.0.254 node number=" + self.index + " xpos=" + str(self.xpos) + " ypos=" + str(self.ypos))
