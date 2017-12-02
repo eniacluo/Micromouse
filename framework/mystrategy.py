@@ -187,3 +187,57 @@ class StrategyTestMultiDFS(Strategy):
 		cell = self.mouse.mazeMap.getCell(self.mouse.x, self.mouse.y)
 		#self.mapPainter.putRobotInCell(cell)
 		sleep(0.2)
+
+class StrategyTestDFSEV3(Strategy):
+	mouse = None
+	mapPainter = None
+	isVisited = []
+	path = []
+	isBack = False
+
+	def __init__(self, mouse, mapPainter):
+		self.mouse = mouse
+		self.mapPainter = mapPainter
+		self.isVisited = [[0 for i in range(self.mouse.mazeMap.width)] for j in range(self.mouse.mazeMap.height)]
+		self.isVisited[self.mouse.x][self.mouse.y] = 1
+
+	def checkFinished(self):
+		return self.isBack
+
+	def go(self):
+		cell = self.mouse.mazeMap.getCell(self.mouse.x, self.mouse.y)
+		self.mapPainter.drawCell(cell, 'grey')
+
+		if not self.mouse.canGoLeft() and not self.isVisited[self.mouse.x-1][self.mouse.y]:
+			self.path.append([self.mouse.x, self.mouse.y])
+			self.isVisited[self.mouse.x-1][self.mouse.y] = 1
+			self.mouse.goLeft()
+		elif not self.mouse.canGoUp() and not self.isVisited[self.mouse.x][self.mouse.y-1]:
+			self.path.append([self.mouse.x, self.mouse.y])
+			self.isVisited[self.mouse.x][self.mouse.y-1] = 1
+			self.mouse.goUp()
+		elif not self.mouse.canGoRight() and not self.isVisited[self.mouse.x+1][self.mouse.y]:
+			self.path.append([self.mouse.x, self.mouse.y])
+			self.isVisited[self.mouse.x+1][self.mouse.y] = 1
+			self.mouse.goRight()
+		elif not self.mouse.canGoDown() and not self.isVisited[self.mouse.x][self.mouse.y+1]:
+			self.path.append([self.mouse.x, self.mouse.y])
+			self.isVisited[self.mouse.x][self.mouse.y+1] = 1
+			self.mouse.goDown()
+		else:
+			if len(self.path) != 0:
+				x, y = self.path.pop()
+				if x < self.mouse.x:
+					self.mouse.goLeft()
+				elif x > self.mouse.x:
+					self.mouse.goRight()
+				elif y < self.mouse.y:
+					self.mouse.goUp()
+				elif y > self.mouse.y:
+					self.mouse.goDown()
+			else:
+				self.isBack = True
+
+		cell = self.mouse.mazeMap.getCell(self.mouse.x, self.mouse.y)
+		self.mapPainter.putRobotInCell(cell)
+		sleep(0.05)

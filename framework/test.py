@@ -4,11 +4,11 @@
 
 from map import Map, MapPainter
 from tkinter import *
-from mystrategy import StrategyTestProgress, StrategyTestCount, StrategyTestGoDown, StrategyTestDFS, StrategyTestMultiDFS
+from mystrategy import StrategyTestProgress, StrategyTestCount, StrategyTestGoDown, StrategyTestDFS, StrategyTestMultiDFS, StrategyTestDFSEV3
 from mouse import Micromouse
 import threading
-from task import CommandTranslator, NetworkInterface
-from myhardware import COREController
+from task import CommandTranslator, WallDetector, NetworkInterface
+from myhardware import COREController, EV3MotorController, EV3SensorController
 from socket import *
 
 def TestMapAndCell():
@@ -165,6 +165,19 @@ def TestStrategyInCORE():
 	micromouse.addTask(StrategyTestMultiDFS(micromouse, mapPainter))
 	micromouse.run()
 
+def TestStrategyDFSEV3():
+	mazeMap = Map(8, 16, 40, 40)
+	mapPainter = MapPainter(mazeMap)
+	mapPainter.createWindow()
+	mapPainter.drawMap()
+	mapPainter.putRobotInCell(mazeMap.getCell(0, 0), 'yellow')
+	micromouse = Micromouse(mazeMap)
+	micromouse.commandTranslator = CommandTranslator(micromouse, EV3MotorController())
+	micromouse.wallDetector = WallDetector(micromouse, EV3SensorController())
+	micromouse.setInitPoint(0, 0)
+	micromouse.addTask(StrategyTestDFSEV3(micromouse, mapPainter))
+	micromouse.run()
+
 #TestMapAndCell()
 #TestMapPainter()
 #TestMapReader()
@@ -174,4 +187,5 @@ def TestStrategyInCORE():
 #TestStrategyDFS()
 #TestInterface()
 #TestStrategyMultiDFS()
-TestStrategyInCORE()
+#TestStrategyInCORE()
+TestStrategyDFSEV3()
