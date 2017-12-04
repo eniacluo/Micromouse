@@ -29,6 +29,9 @@ class Micromouse:
 			self.y = y
 		else:
 			self.y = 0
+	def setInitDirection(self, direction):
+		if direction in ['UP', 'DOWN', 'LEFT', 'RIGHT']:
+			self.direction = direction
 
 	def initMap(self, mazeMap):
 		self.mazeMap = mazeMap
@@ -38,6 +41,12 @@ class Micromouse:
 
 	def initWallDetector(self):
 		self.wallDetector = WallDetector(self)
+
+	def setMotorController(self, motorController):
+		self.commandTranslator = CommandTranslator(self, motorController)
+
+	def setSensorController(self, sensorController):
+		self.wallDetector = WallDetector(self, sensorController)
 
 	def initTaskLoader(self):
 		self.taskLoader = TaskLoader()
@@ -101,5 +110,11 @@ class Micromouse:
 			self.commandTranslator.goDown()
 			self.direction = 'DOWN'
 
+	def senseWalls(self):
+		cell = self.getCurrentCell()
+		self.wallDetector.detectLeftWall(cell)
+		self.wallDetector.detectRightWall(cell)
+		self.wallDetector.detectUpWall(cell)
+		self.wallDetector.detectDownWall(cell)
 
 

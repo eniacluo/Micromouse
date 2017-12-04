@@ -2,9 +2,10 @@
 
 #Author: Zhiwei Luo
 
-from map import Map, MapPainter
-from tkinter import *
-from mystrategy import StrategyTestProgress, StrategyTestCount, StrategyTestGoDown, StrategyTestDFS, StrategyTestMultiDFS, StrategyTestDFSEV3
+#from map import Map, MapPainter
+#from tkinter import *
+from map import Map
+from mystrategy import StrategyTestProgress, StrategyTestCount, StrategyTestGoDown, StrategyTestDFS, StrategyTestMultiDFS, StrategyTestDFSEV3, StrategyTestGoStepEV3, StrategyTestInitEV3, StrategyTestDFSDisplayEV3
 from mouse import Micromouse
 import threading
 from task import CommandTranslator, WallDetector, NetworkInterface
@@ -166,16 +167,28 @@ def TestStrategyInCORE():
 	micromouse.run()
 
 def TestStrategyDFSEV3():
-	mazeMap = Map(8, 16, 40, 40)
-	mapPainter = MapPainter(mazeMap)
-	mapPainter.createWindow()
-	mapPainter.drawMap()
-	mapPainter.putRobotInCell(mazeMap.getCell(0, 0), 'yellow')
+	mazeMap = Map(8, 8, 40, 40)
+	# mapPainter = MapPainter(mazeMap)
+	# mapPainter.createWindow()
+	# mapPainter.drawMap()
+	# mapPainter.putRobotInCell(mazeMap.getCell(0, 0), 'yellow')
+	micromouse = Micromouse(mazeMap)
+	micromouse.setMotorController(EV3MotorController())
+	micromouse.setSensorController(EV3SensorController())
+	micromouse.setInitDirection("UP")
+	micromouse.setInitPoint(2, 7)
+	micromouse.addTask(StrategyTestInitEV3(micromouse))
+	micromouse.addTask(StrategyTestDFSDisplayEV3(micromouse))
+	micromouse.run()
+
+def TestStrategyStepEV3():
+	mazeMap = Map(8, 8, 40, 40)
 	micromouse = Micromouse(mazeMap)
 	micromouse.commandTranslator = CommandTranslator(micromouse, EV3MotorController())
 	micromouse.wallDetector = WallDetector(micromouse, EV3SensorController())
-	micromouse.setInitPoint(0, 0)
-	micromouse.addTask(StrategyTestDFSEV3(micromouse, mapPainter))
+	micromouse.setInitPoint(2, 7)
+	micromouse.addTask(StrategyTestInitEV3(micromouse))
+	micromouse.addTask(StrategyTestGoStepEV3(micromouse))
 	micromouse.run()
 
 #TestMapAndCell()
@@ -189,3 +202,4 @@ def TestStrategyDFSEV3():
 #TestStrategyMultiDFS()
 #TestStrategyInCORE()
 TestStrategyDFSEV3()
+#TestStrategyStepEV3()

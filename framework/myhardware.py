@@ -79,18 +79,9 @@ class EV3MotorController(MotorController):
         self.motorR = Motor('outC')
         self.motorL = Motor('outB')
         self.gy = GyroSensor('in1')
-        self.orilist = ['left','up','right','down']
 
     def turnLeft(self):
         print('Turn Left')
-        if self.direction == 'up':
-            self.direction = 'left'
-        elif self.direction == 'left':
-            self.direction = 'down'
-        elif self.direction == 'down':
-            self.direction = 'right'
-        else:
-            self.direction = 'up'
         self.direc += 90
         self.motorL.run_direct(duty_cycle_sp=-30)
         self.motorR.run_direct(duty_cycle_sp=30)
@@ -110,14 +101,6 @@ class EV3MotorController(MotorController):
 
     def turnRight(self):
         print('Turn Right')
-        if self.direction == 'up':
-            self.direction = 'right'
-        elif self.direction == 'right':
-            self.direction = 'down'
-        elif self.direction == 'down':
-            self.direction = 'left'
-        else:
-            self.direction = 'up'
         self.direc -= 90
         self.motorL.run_direct(duty_cycle_sp=30)
         self.motorR.run_direct(duty_cycle_sp=-30)
@@ -137,15 +120,6 @@ class EV3MotorController(MotorController):
 
     def turnAround(self):
         print('Turn Around')
-        if self.direction == 'up':
-            self.direction = 'down'
-        elif self.direction == 'right':
-            self.direction = 'left'
-        elif self.direction == 'down':
-            self.direction = 'up'
-        else:
-            self.direction = 'right'
-
         # Going left and going right by turn because of the feature of gyro
         if self.backturnp % 2:
             self.direc += 180
@@ -185,10 +159,10 @@ class EV3MotorController(MotorController):
         self.backturnp += 1
         if self.backturnp % 2 == 0:
             time.sleep(2.8)
-            self.direc = self.gyreset()
+            self.gyreset()
 
     def goStraight(self):
-        print('direction: ' + self.direction)
+        print("Go Straight")
         startT = time.time()
         lold = self.left.value()
         rold = self.right.value()
@@ -209,7 +183,7 @@ class EV3MotorController(MotorController):
                 if self.gy.value() < self.direc:
                     self.motorR.run_direct(duty_cycle_sp=42)
                     self.motorL.run_direct(duty_cycle_sp=38)
-                if self.gy.value() > self.direc:
+                if self.gy.value() == self.direc:
                     self.motorR.run_direct(duty_cycle_sp=40)
                     self.motorL.run_direct(duty_cycle_sp=40)
             if time.time() - startT > 1.55:
@@ -220,6 +194,7 @@ class EV3MotorController(MotorController):
                 self.motorR.stop(stop_action='hold')
                 self.motorL.stop(stop_action='hold')
                 self.adjust_stable()
+                break;
 
     #When finishing a movement, adjust the direction to the navigation direction
     def adjust_stable(self):
@@ -301,4 +276,4 @@ class EV3SensorController(SensorController):
             return False
 
     def senseBack(self):
-        return True
+        return False
