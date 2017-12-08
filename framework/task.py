@@ -2,7 +2,7 @@
 
 # Author: Zhiwei Luo
 
-from hardware import MotorController, SensorController
+from controller import MotorController, SensorController
 from socket import *
 import _pickle as pickle
 import threading

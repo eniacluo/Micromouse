@@ -3,11 +3,36 @@
 #Author: Zhiwei Luo
 
 import os
-from hardware import MotorController, SensorController
 from ev3dev.ev3 import *
 
 CORE_CELL_WIDTH = 72
 CORE_CELL_HEIGHT = 48
+
+class MotorController:
+    def turnLeft(self):
+        pass
+
+    def turnRight(self):
+        pass
+
+    def turnAround(self):
+        pass
+
+    def goStraight(self):
+        pass
+
+class SensorController:
+    def senseLeft(self):
+        return False
+
+    def senseRight(self):
+        return False
+
+    def senseFront(self):
+        return False
+
+    def senseBack(self):
+        return False
 
 class COREController(MotorController):
     

@@ -1,4 +1,4 @@
-from cell import Cell
+from map import Cell
 from tkinter import Tk, Canvas
 
 class MapPainter:

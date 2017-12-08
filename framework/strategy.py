@@ -110,15 +110,13 @@ class StrategyTestDFS(Strategy):
 
 class StrategyTestMultiDFS(Strategy):
 	mouse = None
-	mapPainter = None
 	isVisited = []
 	path = []
 	isBack = False
 	network = None
 
-	def __init__(self, mouse, mapPainter):
+	def __init__(self, mouse):
 		self.mouse = mouse
-		self.mapPainter = mapPainter
 		self.isVisited = [[0 for i in range(self.mouse.mazeMap.width)] for j in range(self.mouse.mazeMap.height)]
 		self.isVisited[self.mouse.x][self.mouse.y] = 1
 		self.network = NetworkInterface()
@@ -129,8 +127,8 @@ class StrategyTestMultiDFS(Strategy):
 		return self.isBack
 
 	def go(self):
-		cell = self.mouse.mazeMap.getCell(self.mouse.x, self.mouse.y)
-		#self.mapPainter.drawCell(cell, 'grey')
+		self.mouse.senseWalls()
+		print(self.mouse.getCurrentCell().getWhichIsWall())
 		sendData = {'x': self.mouse.x, 'y':self.mouse.y, 'up':self.mouse.canGoUp(), 'down':self.mouse.canGoDown(), 'left':self.mouse.canGoLeft(), 'right':self.mouse.canGoRight()}
 		self.network.sendStringData(sendData)
 		recvData = self.network.retrieveData()
@@ -142,18 +140,8 @@ class StrategyTestMultiDFS(Strategy):
 			if otherMap['down']: self.mouse.mazeMap.setCellDownAsWall(cell)
 			if otherMap['left']: self.mouse.mazeMap.setCellLeftAsWall(cell)
 			if otherMap['right']: self.mouse.mazeMap.setCellRightAsWall(cell)
-			#self.mapPainter.drawCell(cell, 'grey')
 			recvData = self.network.retrieveData()
 
-		import os
-		os.system('clear')
-		for i in range(self.mouse.mazeMap.height):
-			for j in range(self.mouse.mazeMap.width):
-				if self.isVisited[j][i]: 
-					print('*', end='')
-				else:
-					print(' ', end='')
-			print('')
 		if not self.mouse.canGoLeft() and not self.isVisited[self.mouse.x-1][self.mouse.y]:
 			self.path.append([self.mouse.x, self.mouse.y])
 			self.isVisited[self.mouse.x-1][self.mouse.y] = 1
@@ -184,9 +172,6 @@ class StrategyTestMultiDFS(Strategy):
 			else:
 				self.isBack = True
 
-		cell = self.mouse.mazeMap.getCell(self.mouse.x, self.mouse.y)
-		#self.mapPainter.putRobotInCell(cell)
-		sleep(0.2)
 
 class StrategyTestDFSEV3(Strategy):
 	mouse = None
