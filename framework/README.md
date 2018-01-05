@@ -1,19 +1,19 @@
 ## Tutorial
 To make a new algorithm for running a micromouse, you need to do the following steps:
-1. writes your own strategy inheriting from class Strategy and overrides the function checkFinished() and function go().
-2. writes your own motor controller inheriting from class Motor Controller and sensor controller inheriting from class Sensor Controller for your hardware - robot. You need to overrides the functions: turnLeft(), turnRight(), turnAround(), goStraight() in Motor Controller and senseLeft(), senseRight(),  senseFront(), senseBack() from Sensor Controller
-3. write a starting class or function to create a micromouse to run.
+1. Write your own strategy inheriting from class Strategy and overrides the function checkFinished() and function go().
+2. Write your own motor controller inheriting from class Motor Controller and sensor controller inheriting from class Sensor Controller for your hardware - robot. You need to overrides the functions: turnLeft(), turnRight(), turnAround(), goStraight() in Motor Controller and senseLeft(), senseRight(),  senseFront(), senseBack() from Sensor Controller
+3. Write a starting class or function to create a micromouse to run.
 
 ## Example
 DFS algorithm for one mouse traversing the maze
  
-For a basic DFS algorithm for only one mouse running in the maze, you can write a Strategy called ‘StrategyDFS’ which inherits the Strategy class and overrides the function ‘checkFinished’ and function ‘go’. The function ‘checkFinished’ is called because the Task Loader repeatedly check whether the task applying the strategy has finished after calling function ‘go’. The main structure of function ‘run’ of Task Loader is as follows::
+For a basic DFS algorithm for only one mouse running in the maze, you can write a Strategy called ‘StrategyDFS’ which inherits the Strategy class and overrides the function ‘checkFinished’ and function ‘go’. The function ‘checkFinished’ is called because the Task Loader repeatedly check whether the task applying the strategy has finished after calling function ‘go’. The main structure of function ‘run’ of Task Loader is as follows:
 
     def run():
         while not strategy.checkFinished():
             strategy.go()
 
-Let’s suppose we write a class inherits from Strategy as follows::
+Let’s suppose we write a class inherits from Strategy as follows:
 
     class StrategyTestDFS(Strategy):
         mouse = None
@@ -44,7 +44,7 @@ Let’s suppose we write a class inherits from Strategy as follows::
             print(self.mouse.x, self.mouse.y)
 
 
-For starting a user defined micromouse, you can write a function to run like follows::
+For starting a user defined micromouse, you can write a function to run like follows:
 
     def myMouse():
         mazeMap = Map(16, 16, 40, 40)
