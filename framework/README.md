@@ -54,7 +54,7 @@ For starting a user defined micromouse, you can write a function to run like fol
         micromouse.addTask(StrategyTestDFS(micromouse))
         micromouse.run()
 
-## Sample file
+## Demonstrations
 
 Please read core_demo.py and demo.py to see how to use the framework. 
 core_demo.py is used for running the DFS in CORE. The set-up steps are as follows:
@@ -69,7 +69,7 @@ $ sudo nano ./preload.py
  
 _startup = ('"full path of this folder"/backservice.sh',) 
 
-$ sudo nano /home/student/.core/nodes.conf
+$ sudo nano $HOME/.core/nodes.conf
 
 change line: 4 { mdr mdr.gif mdr.gif {zebra OSPFv3MDR vtysh IPForward MyService}  netns {built-in type for wireless routers} }
 
@@ -87,7 +87,7 @@ change all file locations to "full path of this folder".
 
 #### Set file permission
 
-$ chmod 755 __init__.py
+$ chmod 755 \_\_init\_\_.py
 
 $ chmod 755 preload.py
 
