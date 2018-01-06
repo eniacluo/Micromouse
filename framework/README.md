@@ -56,4 +56,64 @@ For starting a user defined micromouse, you can write a function to run like fol
 
 ## Sample file
 
-Please read and run sample.py to see how to use the framework. The detailed descriptions including the architecture are provided in https://docs.google.com/document/d/1im-nFw-iO0sKvpq5XH-agR5obBuFwbSLMbefUWsbebQ/edit?usp=sharing. If you have any questions, please mail to eniacsimon@gmail.com to get help.
+Please read core_demo.py and demo.py to see how to use the framework. 
+core_demo.py is used for running the DFS in CORE. The set-up steps are as follows:
+
+### Run in CORE
+
+$ sudo nano /etc/core/core.conf
+
+change the line of custom_services_dir to: custom_services_dir = "full path of this folder"
+
+$ sudo nano ./preload.py
+ 
+_startup = ('"full path of this folder"/backservice.sh',) 
+
+$ sudo nano /home/student/.core/nodes.conf
+
+change line: 4 { mdr mdr.gif mdr.gif {zebra OSPFv3MDR vtysh IPForward MyService}  netns {built-in type for wireless routers} }
+
+$ sudo nano ./backservice.sh
+
+change export ServiceHOME="full path of this folder"
+
+$ sudo nano ./config.ini
+
+change mazefile location to: "full path of this folder"/mazes/2012japan-ef.txt
+
+$ sudo nano ./maze.xml
+
+change all file locations to "full path of this folder".
+
+#### Set file permission
+
+$ chmod 755 __init__.py
+
+$ chmod 755 preload.py
+
+$ chmod 755 backservice.sh
+
+You don't need to re-set this setting every time you run this demo once set.
+
+$ sudo service core-daemon restart
+
+$ core-gui
+
+Then open maze.xml, edit all icon, wallpaper file paths into your own full path (CORE won't recognize), finally open the edited xml file in your core-gui.
+
+demo.py is used for running in EV3 in real maze.
+
+### Run in EV3
+
+Set up wifi: 
+SSID: [sensorwebprinter]
+Password: [sensorweb] 
+
+Two mice have been setup to automatically connect this wifi. Check their IP addresses, they will be 192.200.1.100 and 192.200.1.101.
+Put mouse No.1 into the maze at (2, 0) and make it face to the LEFT. Put mouse No.2 into the maze at (2, 7) and make it face to UP. See the following demonstration:
+    
+Press the center button of EV3 to boot and wait until the main menu appears. Choose File browser->demo.py. Click the center button to start. The light may turn orange if everything is good. It is not necessarily that two mice start at the exact the same time.
+
+## Documentation for framework
+
+The detailed descriptions including the architecture are provided in https://docs.google.com/document/d/1im-nFw-iO0sKvpq5XH-agR5obBuFwbSLMbefUWsbebQ/edit?usp=sharing. If you have any questions, please mail to eniacsimon@gmail.com to get help.
