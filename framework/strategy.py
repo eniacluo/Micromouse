@@ -172,6 +172,8 @@ class StrategyTestMultiDFS(Strategy):
 			else:
 				self.isBack = True
 
+		sleep(0.5)
+
 
 class StrategyTestDFSEV3(Strategy):
 	mouse = None

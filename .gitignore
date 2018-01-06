@@ -1,2 +1,4 @@
 *.pyc
 Hardware/
+__pycache__/
+status-Luo.pptx

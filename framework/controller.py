@@ -3,7 +3,7 @@
 #Author: Zhiwei Luo
 
 import os
-from ev3dev.ev3 import *
+#from ev3dev.ev3 import *
 
 CORE_CELL_WIDTH = 72
 CORE_CELL_HEIGHT = 48
