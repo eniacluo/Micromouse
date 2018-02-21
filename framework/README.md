@@ -1,3 +1,39 @@
+## Module Description
+Micromouse
+├── backservice.sh          //starting program in MyService
+├── \_\_init\_\_.py         //module automatically read by CORE when core-gui opens
+├── preload.py              //MyService class as an extra service that can be added into CORE, pointered by \_\_init\_\_.py
+│                             and it specifies the starting program. Here it's the backservice.sh
+│                             **Calling Relations: CORE -> \_\_init\_\_.py -> preload.py -> backservice.sh -> core_demo.py**
+├── framework               //framework written in Python3
+│   ├── controller.py       //**Control Layer**: *MotorController*, *SensorController*, *COREController*, 
+│   │                                        *EV3MotorController*, *EV3SensorController*
+│   ├── core_demo.py        //Example of demonstrating multi-agent DFS in CORE
+│   ├── demo.py             //Example of demonstrating multi-agent DFS in EV3-Lego robot
+│   ├── display.py          //GUI program showing the discovery of micromouse in real maze
+│   ├── map_painter.py      //The painting tool for presenting the maze written
+│   ├── map.py              //**Active Layer**: MazeMap, which contains the classes of *Map* and *Cell*
+│   ├── mouse.py            //The *Micromouse* class for managing all the modules
+│   ├── README.md
+│   ├── strategy.py         //**Active Layer**: Various of testing cases of *Strategy*
+│   └── task.py             //**Task Layer**: *TaskLoader*, *Task*, *WallDetector*, *CommandTranslator*, *NetworkInterface*
+├── icons                   //folder for icons of mice shown in CORE
+│   ├── robotblu.png
+│   └── (...png files...)
+├── mazes                   //folder for maze examples that png files are pictures for backgrounds and txt files 
+│   │                         are corresponding maze presented in (\*, \|, etc) which should be parsed by a function. 
+│   │                         See map.py -> readFromFile as a parser example.
+│   ├── 2009japan-b.png
+│   ├── 2009japanb.txt
+│   ├── 2010japan.png
+│   ├── 2010japan.txt
+│   └── (...png file and txt file...)
+├── maze.xml                //layout file opened and saved by CORE
+└── old_version             //deprecated code, please ignore it
+    ├── stop.py
+    └── (...other code files...)
+
+
 ## Tutorial
 To make a new algorithm for running a micromouse, you need to do the following steps:
 1. Write your own strategy inheriting from class Strategy and overrides the function checkFinished() and function go().
@@ -13,46 +49,77 @@ For a basic DFS algorithm for only one mouse running in the maze, you can write 
         while not strategy.checkFinished():
             strategy.go()
 
-Let’s suppose we write a class inherits from Strategy as follows:
+**Step 1**: Write your own strategy inheriting from class Strategy and overrides the function checkFinished() and function go().
+
+Let’s suppose we write a class inherits from Strategy as follows: (copied from strategy.py -> StrategyTestDFS)
 
     class StrategyTestDFS(Strategy):
-        mouse = None
-        isBack = False
+        mouse = None    # It is necessary to keep a mouse instance as a member variant of Strategy class
+        isVisited = []  # The isVisited is a two-dimensional array marking which cell has been visited by itself or other robots
+        path = []       # The path is a stack to track the path that mouse goes through
+        isBack = False  # Use a flag to mark whether the mouse has gone back to the origin
+        network = None  # The instance of NetworkInterface
 
-        def __init__(self, mouse):
+        def __init__(self, mouse):  # Called when Micromouse add a task with this strategy and it passes instance of itself as the second argument
             self.mouse = mouse
+            self.isVisited = [[0 for i in range(self.mouse.mazeMap.width)] for j in range(self.mouse.mazeMap.height)]
+            self.isVisited[self.mouse.x][self.mouse.y] = 1  # 1 marks that isVisited[x][y] has been visited
 
         def checkFinished(self):
-            return self.isBack
+            return self.isBack      # The terminating condition is that isBack = 1
 
         def go(self):
-            if not self.mouse.leftIsWall() and not self.mouse.visitedLeft():
+            # Sequentially check four directions, go if there is no wall and has not been visited before
+            if not self.mouse.canGoLeft() and not self.isVisited[self.mouse.x-1][self.mouse.y]:
+                self.path.append([self.mouse.x, self.mouse.y])
+                self.isVisited[self.mouse.x-1][self.mouse.y] = 1
                 self.mouse.goLeft()
-            elif not self.mouse.UpIsWall() and not self.mouse.visitedUp():
+            elif not self.mouse.canGoUp() and not self.isVisited[self.mouse.x][self.mouse.y-1]:
+                self.path.append([self.mouse.x, self.mouse.y])
+                self.isVisited[self.mouse.x][self.mouse.y-1] = 1
                 self.mouse.goUp()
-            elif not self.mouse.RightIsWall() and not self.mouse.visitedRight():
+            elif not self.mouse.canGoRight() and not self.isVisited[self.mouse.x+1][self.mouse.y]:
+                self.path.append([self.mouse.x, self.mouse.y])
+                self.isVisited[self.mouse.x+1][self.mouse.y] = 1
                 self.mouse.goRight()
-            elif not self.mouse.DownIsWall() and not self.mouse.visitedDown():
+            elif not self.mouse.canGoDown() and not self.isVisited[self.mouse.x][self.mouse.y+1]:
+                self.path.append([self.mouse.x, self.mouse.y])
+                self.isVisited[self.mouse.x][self.mouse.y+1] = 1
                 self.mouse.goDown()
             else:
-                if len(self.mouse.path) != 0:
-                    x, y = self.mouse.path.pop()
-                    self.mouse.goBack(x, y)
+            # When four directions are either wall or visited, go back one step by popping up path stack
+                if len(self.path) != 0:
+                    x, y = self.path.pop()
+                    if x < self.mouse.x:
+                        self.mouse.goLeft()
+                    elif x > self.mouse.x:
+                        self.mouse.goRight()
+                    elif y < self.mouse.y:
+                        self.mouse.goUp()
+                    elif y > self.mouse.y:
+                        self.mouse.goDown()
                 else:
+                # The stack being empty means that mouse has gone back to the origin 
                     self.isBack = True
 
-            print(self.mouse.x, self.mouse.y)
+            sleep(0.5) # Delay for better demonstration
 
+**Step 2**: Write your own motor controller inheriting from class Motor Controller and Sensor Controller inheriting from class Sensor Controller for your hardware - robot. You need to overrides the functions: turnLeft(), turnRight(), turnAround(), goStraight() in Motor Controller and senseLeft(), senseRight(),  senseFront(), senseBack() from Sensor Controller.
 
-For starting a user defined micromouse, you can write a function to run like follows:
+If you are going to demonstrate in CORE or EV3, you can directly utilize the *COREController* and *EV3MotorController*, *EV3SensorController* in *controller.py* and skip this step. The mentioned functions are atomic procedures for Task Layer to call so that when writting a strategy, you can just call senseWalls(), goLeft(), goRight(), goUp() or goDown() in Micromouse class without considering the direction it faces and writing code of manipulating the hardware.
+
+**Step 3**: Write a starting function to create a micromouse to run.
+
+    from map import Map;
+    from mouse import Micromouse;
+    from strategy import StrategyTestDFS;
 
     def myMouse():
-        mazeMap = Map(16, 16, 40, 40)
-        mazeMap.readFromFile('/home/zhiwei/Micromouse/mazes/2009japanb.txt')
-        micromouse = Micromouse(mazeMap)
-        micromouse.setInitPoint(0, 0)
-        micromouse.addTask(StrategyTestDFS(micromouse))
-        micromouse.run()
+        mazeMap = Map(16, 16, 40, 40)                   # Specify the size of maze map, ignore the last two arguments.
+        micromouse = Micromouse(mazeMap)                # Create a micromouse with the empty map
+        micromouse.setInitPoint(0, 0)                   # Tell the micromouse the origin coordinate
+        micromouse.addTask(StrategyTestDFS(micromouse)) # Use the created Strategy with this micromouse instance to add a Task
+        micromouse.run()                                # The TaskLoader will run the tasks you have added
 
 ## Demonstrations
 
@@ -61,29 +128,42 @@ core_demo.py is used for running the DFS in CORE. The set-up steps are as follow
 
 ### Run in CORE
 
+First make sure that CORE has been installed. If you have not installed CORE, follow https://docs.google.com/document/d/1LPkPc2lbStwFtiukYfCxhcW7KewD028XzNfMd20uFFA/ to install.
+
+Download the Micromouse framework from https://github.com/eniacluo/Micromouse. DO NOT only download the framework folder because the maze file examples are not included.
+
+Replace some lines of following files corresponding to the path. DO NOT make your path of Micromouse framework too long and sometimes it does not work if there are *special characters* like underscore or slash in the full path. 
+
+$ cd <path you downloaded>/Micromouse
+
 $ sudo nano /etc/core/core.conf
 
-change the line of custom_services_dir to: custom_services_dir = "full path of this folder"
+Uncomment the line of custom_services_dir and set:
 
-$ sudo nano ./preload.py
+custom_services_dir = **<full path of this folder>**
+listenaddr = **0.0.0.0**
+
+$ nano ./preload.py
  
-_startup = ('"full path of this folder"/backservice.sh',) 
+_startup = ('**<full path of this folder>**/backservice.sh',) 
 
-$ sudo nano $HOME/.core/nodes.conf
+$ nano $HOME/.core/nodes.conf
 
-change line: 4 { mdr mdr.gif mdr.gif {zebra OSPFv3MDR vtysh IPForward MyService}  netns {built-in type for wireless routers} }
+change line: 4 { mdr mdr.gif mdr.gif {zebra OSPFv3MDR vtysh IPForward **MyService**}  netns {built-in type for wireless routers} }
 
-$ sudo nano ./backservice.sh
+$ nano ./backservice.sh
 
-change export ServiceHOME="full path of this folder"
+export ServiceHOME=**<full path of this folder>**/framework
 
-$ sudo nano ./config.ini
+$ nano ./maze.xml
 
-change mazefile location to: "full path of this folder"/mazes/2012japan-ef.txt
+change paths of 4 icons:
 
-$ sudo nano ./maze.xml
+name="icon" value="**<full path of this folder>**/icons/robot\*\*\*.png"
 
-change all file locations to "full path of this folder".
+change path of wallpaper:
+
+wallpaper {**<full path of this folder>**/mazes/2012japan-ef.png}
 
 #### Set file permission
 
@@ -99,20 +179,31 @@ $ sudo service core-daemon restart
 
 $ core-gui
 
-Then open maze.xml, edit all icon, wallpaper file paths into your own full path (CORE won't recognize), finally open the edited xml file in your core-gui.
-
-demo.py is used for running in EV3 in real maze.
+Then open maze.xml, click the **Start session** button.
 
 ### Run in EV3
 
-Set up wifi: 
-SSID: [sensorwebprinter]
-Password: [sensorweb] 
+$ nano demo.py
 
-Two mice have been setup to automatically connect this wifi. Check their IP addresses, they will be 192.200.1.100 and 192.200.1.101.
-Put mouse No.1 into the maze at (2, 0) and make it face to the LEFT. Put mouse No.2 into the maze at (2, 7) and make it face to UP. See the following demonstration:
-    
-Press the center button of EV3 to boot and wait until the main menu appears. Choose File browser->demo.py. Click the center button to start. The light may turn orange if everything is good. It is not necessarily that two mice start at the exact the same time.
+Change the size to match your maze:
+
+    mazeMap = Map(8, 8, 40, 40)
+
+Specify the direction it faces at the beginning, *UP* is default:
+
+    micromouse.setInitDirection("UP")
+
+Set the initial coordinate x, y:
+
+    micromouse.setInitPoint(2, 7)
+
+Add the task with written Strategy instance:
+
+    micromouse.addTask(StrategyTestMultiDFS(micromouse))
+
+Download the framework folder into the EV3 robot.
+
+Press the center button of EV3 to boot and wait until the main menu appears. Choose File *browser->demo.py*. Click the center button to start. The light may turn orange if everything is good. It is not necessarily that two mice start at exact the same time.
 
 ## Documentation for framework
 
