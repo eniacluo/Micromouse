@@ -37,7 +37,7 @@
 ## Tutorial
 To make a new algorithm for running a micromouse, you need to do the following steps:
 1. Write your own strategy inheriting from class Strategy and overrides the function checkFinished() and function go().
-2. Write your own motor controller inheriting from class Motor Controller and sensor controller inheriting from class Sensor Controller for your hardware - robot. You need to overrides the functions: turnLeft(), turnRight(), turnAround(), goStraight() in Motor Controller and senseLeft(), senseRight(),  senseFront(), senseBack() from Sensor Controller
+2. Write your own motor controller inheriting from class Motor Controller and Sensor Controller inheriting from class Sensor Controller for your hardware - robot. You need to overrides the functions: turnLeft(), turnRight(), turnAround(), goStraight() in Motor Controller and senseLeft(), senseRight(),  senseFront(), senseBack() from Sensor Controller
 3. Write a starting class or function to create a micromouse to run.
 
 ## Example
@@ -134,28 +134,28 @@ Download the Micromouse framework from https://github.com/eniacluo/Micromouse. D
 
 Replace some lines of following files corresponding to the path. DO NOT make your path of Micromouse framework too long and sometimes it does not work if there are *special characters* like underscore or slash in the full path. 
 
-    $ cd "path you downloaded"/Micromouse
+$ cd "path you downloaded"/Micromouse
 
-    $ sudo nano /etc/core/core.conf
+$ sudo nano /etc/core/core.conf
 
 Uncomment the line of custom_services_dir and set:
 
 custom_services_dir = **"full path of this folder"**  
 listenaddr = **0.0.0.0**
 
-    $ nano ./preload.py
+$ nano ./preload.py
  
 _startup = ('**"full path of this folder"**/backservice.sh',) 
 
-    $ nano $HOME/.core/nodes.conf
+$ nano $HOME/.core/nodes.conf
 
 change line: 4 { mdr mdr.gif mdr.gif {zebra OSPFv3MDR vtysh IPForward **MyService**}  netns {built-in type for wireless routers} }
 
-    $ nano ./backservice.sh
+$ nano ./backservice.sh
 
 export ServiceHOME=**"full path of this folder"**/framework
 
-    $ nano ./maze.xml
+$ nano ./maze.xml
 
 change paths of 4 icons:
 
@@ -167,23 +167,23 @@ wallpaper {**"full path of this folder"**/mazes/2012japan-ef.png}
 
 #### Set file permission
 
-    $ chmod 755 \_\_init\_\_.py
+$ chmod 755 \_\_init\_\_.py
 
-    $ chmod 755 preload.py
+$ chmod 755 preload.py
 
-    $ chmod 755 backservice.sh
+$ chmod 755 backservice.sh
 
 You don't need to re-set this setting every time you run this demo once set.
 
-    $ sudo service core-daemon restart
+$ sudo service core-daemon restart
 
-    $ core-gui
+$ core-gui
 
 Then open maze.xml, click the **Start session** button.
 
 ### Run in EV3
 
-    $ nano demo.py
+$ nano demo.py
 
 Change the size to match your maze:
 
