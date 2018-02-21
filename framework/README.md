@@ -1,37 +1,37 @@
 ## Module Description
-    Micromouse
-    ├── backservice.sh          //starting program in MyService
-    ├── \_\_init\_\_.py         //module automatically read by CORE when core-gui opens
-    ├── preload.py              //MyService class as an extra service that can be added into CORE, pointered by \_\_init\_\_.py
-    │                             and it specifies the starting program. Here it's the backservice.sh
-    │                             **Calling Relations: CORE -> \_\_init\_\_.py -> preload.py -> backservice.sh -> core_demo.py**
-    ├── framework               //framework written in Python3
-    │   ├── controller.py       //**Control Layer**: *MotorController*, *SensorController*, *COREController*, 
-    │   │                                        *EV3MotorController*, *EV3SensorController*
-    │   ├── core_demo.py        //Example of demonstrating multi-agent DFS in CORE
-    │   ├── demo.py             //Example of demonstrating multi-agent DFS in EV3-Lego robot
-    │   ├── display.py          //GUI program showing the discovery of micromouse in real maze
-    │   ├── map_painter.py      //The painting tool for presenting the maze written
-    │   ├── map.py              //**Active Layer**: MazeMap, which contains the classes of *Map* and *Cell*
-    │   ├── mouse.py            //The *Micromouse* class for managing all the modules
-    │   ├── README.md
-    │   ├── strategy.py         //**Active Layer**: Various of testing cases of *Strategy*
-    │   └── task.py             //**Task Layer**: *TaskLoader*, *Task*, *WallDetector*, *CommandTranslator*, *NetworkInterface*
-    ├── icons                   //folder for icons of mice shown in CORE
-    │   ├── robotblu.png
-    │   └── (...png files...)
-    ├── mazes                   //folder for maze examples that png files are pictures for backgrounds and txt files 
-    │   │                         are corresponding maze presented in (\*, \|, etc) which should be parsed by a function. 
-    │   │                         See map.py -> readFromFile as a parser example.
-    │   ├── 2009japan-b.png
-    │   ├── 2009japanb.txt
-    │   ├── 2010japan.png
-    │   ├── 2010japan.txt
-    │   └── (...png file and txt file...)
-    ├── maze.xml                //layout file opened and saved by CORE
-    └── old_version             //deprecated code, please ignore it
-        ├── stop.py
-        └── (...other code files...)
+Micromouse  
+├── backservice.sh          //starting program in MyService  
+├── \_\_init\_\_.py         //module automatically read by CORE when core-gui opens  
+├── preload.py              //MyService class as an extra service that can be added into CORE, pointered by \_\_init\_\_.py  
+│                             and it specifies the starting program. Here it's the backservice.sh  
+│                             **Calling Relations: CORE -> \_\_init\_\_.py -> preload.py -> backservice.sh -> core_demo.py**  
+├── framework               //framework written in Python3  
+│   ├── controller.py       //**Control Layer**: *MotorController*, *SensorController*, *COREController*,   
+│   │                                        *EV3MotorController*, *EV3SensorController*  
+│   ├── core_demo.py        //Example of demonstrating multi-agent DFS in CORE  
+│   ├── demo.py             //Example of demonstrating multi-agent DFS in EV3-Lego robot  
+│   ├── display.py          //GUI program showing the discovery of micromouse in real maze  
+│   ├── map_painter.py      //The painting tool for presenting the maze written  
+│   ├── map.py              //**Active Layer**: MazeMap, which contains the classes of *Map* and *Cell*  
+│   ├── mouse.py            //The *Micromouse* class for managing all the modules  
+│   ├── README.md  
+│   ├── strategy.py         //**Active Layer**: Various of testing cases of *Strategy*  
+│   └── task.py             //**Task Layer**: *TaskLoader*, *Task*, *WallDetector*, *CommandTranslator*, *NetworkInterface*  
+├── icons                   //folder for icons of mice shown in CORE  
+│   ├── robotblu.png  
+│   └── (...png files...)  
+├── mazes                   //folder for maze examples that png files are pictures for backgrounds and txt files   
+│   │                         are corresponding maze presented in (\*, \|, etc) which should be parsed by a function.   
+│   │                         See map.py -> readFromFile as a parser example.  
+│   ├── 2009japan-b.png  
+│   ├── 2009japanb.txt  
+│   ├── 2010japan.png  
+│   ├── 2010japan.txt  
+│   └── (...png file and txt file...)  
+├── maze.xml                //layout file opened and saved by CORE  
+└── old_version             //deprecated code, please ignore it  
+    ├── stop.py  
+    └── (...other code files...)  
 
 
 ## Tutorial
