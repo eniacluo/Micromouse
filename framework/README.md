@@ -134,72 +134,72 @@ Download the Micromouse framework from https://github.com/eniacluo/Micromouse. D
 
 Replace some lines of following files corresponding to the path. DO NOT make your path of Micromouse framework too long and sometimes it does not work if there are *special characters* like underscore or slash in the full path. 
 
-    $ cd "path you downloaded"/Micromouse
+$ cd "path you downloaded"/Micromouse
 
-    $ sudo nano /etc/core/core.conf
+$ sudo nano /etc/core/core.conf
 
 Uncomment the line of custom_services_dir and set:
 
-        custom_services_dir = **"full path of this folder"**
-        listenaddr = **0.0.0.0**
+custom_services_dir = **"full path of this folder"**  
+listenaddr = **0.0.0.0**
 
-    $ nano ./preload.py
+$ nano ./preload.py
  
-        _startup = ('**"full path of this folder"**/backservice.sh',) 
+_startup = ('**"full path of this folder"**/backservice.sh',) 
 
-    $ nano $HOME/.core/nodes.conf
+$ nano $HOME/.core/nodes.conf
 
 change line: 4 { mdr mdr.gif mdr.gif {zebra OSPFv3MDR vtysh IPForward **MyService**}  netns {built-in type for wireless routers} }
 
-    $ nano ./backservice.sh
+$ nano ./backservice.sh
 
-        export ServiceHOME=**"full path of this folder"**/framework
+export ServiceHOME=**"full path of this folder"**/framework
 
-    $ nano ./maze.xml
+$ nano ./maze.xml
 
 change paths of 4 icons:
 
-        name="icon" value="**"full path of this folder"**/icons/robot\*\*\*.png"
+name="icon" value="**"full path of this folder"**/icons/robot\*\*\*.png"
 
 change path of wallpaper:
 
-        wallpaper {**"full path of this folder"**/mazes/2012japan-ef.png}
+wallpaper {**"full path of this folder"**/mazes/2012japan-ef.png}
 
 #### Set file permission
 
-    $ chmod 755 \_\_init\_\_.py
+$ chmod 755 \_\_init\_\_.py
 
-    $ chmod 755 preload.py
+$ chmod 755 preload.py
 
-    $ chmod 755 backservice.sh
+$ chmod 755 backservice.sh
 
 You don't need to re-set this setting every time you run this demo once set.
 
-    $ sudo service core-daemon restart
+$ sudo service core-daemon restart
 
-    $ core-gui
+$ core-gui
 
 Then open maze.xml, click the **Start session** button.
 
 ### Run in EV3
 
-    $ nano demo.py
+$ nano demo.py
 
 Change the size to match your maze:
 
-        mazeMap = Map(8, 8, 40, 40)
+    mazeMap = Map(8, 8, 40, 40)
 
 Specify the direction it faces at the beginning, *UP* is default:
 
-        micromouse.setInitDirection("UP")
+    micromouse.setInitDirection("UP")
 
 Set the initial coordinate x, y:
 
-        micromouse.setInitPoint(2, 7)
+    micromouse.setInitPoint(2, 7)
 
 Add the task with written Strategy instance:
 
-        micromouse.addTask(StrategyTestMultiDFS(micromouse))
+    micromouse.addTask(StrategyTestMultiDFS(micromouse))
 
 Download the framework folder into the EV3 robot.
 
