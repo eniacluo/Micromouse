@@ -7,7 +7,7 @@ from mouse import Micromouse
 from strategy import StrategyTestInitEV3, StrategyTestMultiDFS
 from controller import EV3MotorController, EV3SensorController
 
-mazeMap = Map(8, 8, 40, 40)
+mazeMap = Map(8, 8)
 micromouse = Micromouse(mazeMap)
 micromouse.setMotorController(EV3MotorController())
 micromouse.setSensorController(EV3SensorController())

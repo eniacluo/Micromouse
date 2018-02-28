@@ -8,7 +8,7 @@ from strategy import StrategyTestMultiDFS
 from controller import COREController
 from socket import *
 
-mazeMap = Map(16, 16, 40, 40)
+mazeMap = Map(16, 16)
 mazeMap.readFromFile('/home/zhiwei/Micromouse/mazes/2012japan-ef.txt')
 micromouse = Micromouse(mazeMap)
 index = gethostname()[1:]

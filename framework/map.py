@@ -52,15 +52,11 @@ class Cell:
 class Map:
 	height = 0
 	width = 0
-	cellHeight = 0
-	cellWidth = 0
 	cells = None
 
-	def __init__(self, height, width, cellHeight, cellWidth):
+	def __init__(self, height, width):
 		self.height = height
 		self.width = width
-		self.cellHeight = cellHeight
-		self.cellWidth = cellWidth
 		self.cells = [[Cell(j, i) for i in range(width)] for j in range(height)]
 
 	def getCell(self, x, y):

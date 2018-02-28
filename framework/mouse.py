@@ -75,40 +75,36 @@ class Micromouse:
 		return self.mazeMap.getCell(self.x, self.y)
 
 	def canGoLeft(self):
-		return self.mazeMap.getCellLeftWall(self.getCurrentCell())
+		return not self.mazeMap.getCellLeftWall(self.getCurrentCell())
 
 	def canGoRight(self):
-		return self.mazeMap.getCellRightWall(self.getCurrentCell())
+		return not self.mazeMap.getCellRightWall(self.getCurrentCell())
 
 	def canGoUp(self):
-		return self.mazeMap.getCellUpWall(self.getCurrentCell())
+		return not self.mazeMap.getCellUpWall(self.getCurrentCell())
 
 	def canGoDown(self):
-		return self.mazeMap.getCellDownWall(self.getCurrentCell())
+		return not self.mazeMap.getCellDownWall(self.getCurrentCell())
 
 	def goLeft(self):
-		if not self.canGoLeft():
-			self.commandTranslator.goLeft()
-			self.x = self.x - 1
-			self.direction = 'LEFT'
+		self.commandTranslator.goLeft()
+		self.x = self.x - 1
+		self.direction = 'LEFT'
 
 	def goRight(self):
-		if not self.canGoRight():
-			self.x = self.x + 1
-			self.commandTranslator.goRight()
-			self.direction = 'RIGHT'
+		self.x = self.x + 1
+		self.commandTranslator.goRight()
+		self.direction = 'RIGHT'
 
 	def goUp(self):
-		if not self.canGoUp():
-			self.y = self.y - 1
-			self.commandTranslator.goUp()
-			self.direction = 'UP'
+		self.y = self.y - 1
+		self.commandTranslator.goUp()
+		self.direction = 'UP'
 
 	def goDown(self):
-		if not self.canGoDown():
-			self.y = self.y + 1
-			self.commandTranslator.goDown()
-			self.direction = 'DOWN'
+		self.y = self.y + 1
+		self.commandTranslator.goDown()
+		self.direction = 'DOWN'
 
 	def senseWalls(self):
 		cell = self.getCurrentCell()

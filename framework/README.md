@@ -115,7 +115,7 @@ If you are going to demonstrate in CORE or EV3, you can directly utilize the *CO
     from strategy import StrategyTestDFS;
 
     def myMouse():
-        mazeMap = Map(16, 16, 40, 40)                   # Specify the size of maze map, ignore the last two arguments.
+        mazeMap = Map(16, 16)                           # Specify the size of maze map, ignore the last two arguments.
         micromouse = Micromouse(mazeMap)                # Create a micromouse with the empty map
         micromouse.setInitPoint(0, 0)                   # Tell the micromouse the origin coordinate
         micromouse.addTask(StrategyTestDFS(micromouse)) # Use the created Strategy with this micromouse instance to add a Task
@@ -187,17 +187,7 @@ change path of maze file:
 
 mazeMap.readFromFile('**"full path of this folder"**/mazes/2012japan-ef.txt')
 
-####Step 3: Add ip address corresponding to node name for host name parsing.
-
-$ sudo nano /etc/hosts
-
-Append all the four nodes ip addresses and host names in the first part(ipv4) of file:
-10.0.0.1    n1
-10.0.0.2    n2
-10.0.0.3    n3
-10.0.0.4    n4
-
-####Step 4: Open CORE to demonstrate:
+####Step 3: Open CORE to demonstrate:
 
 $ core-gui
 
@@ -213,7 +203,7 @@ $ nano demo.py
 
 Change the size to match your maze:
 
-    mazeMap = Map(8, 8, 40, 40)
+    mazeMap = Map(8, 8)
 
 Specify the direction it faces at the beginning, *UP* is default:
 

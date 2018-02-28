@@ -73,19 +73,19 @@ class StrategyTestDFS(Strategy):
 		cell = self.mouse.mazeMap.getCell(self.mouse.x, self.mouse.y)
 		self.mapPainter.drawCell(cell, 'grey')
 
-		if not self.mouse.canGoLeft() and not self.isVisited[self.mouse.x-1][self.mouse.y]:
+		if self.mouse.canGoLeft() and not self.isVisited[self.mouse.x-1][self.mouse.y]:
 			self.path.append([self.mouse.x, self.mouse.y])
 			self.isVisited[self.mouse.x-1][self.mouse.y] = 1
 			self.mouse.goLeft()
-		elif not self.mouse.canGoUp() and not self.isVisited[self.mouse.x][self.mouse.y-1]:
+		elif self.mouse.canGoUp() and not self.isVisited[self.mouse.x][self.mouse.y-1]:
 			self.path.append([self.mouse.x, self.mouse.y])
 			self.isVisited[self.mouse.x][self.mouse.y-1] = 1
 			self.mouse.goUp()
-		elif not self.mouse.canGoRight() and not self.isVisited[self.mouse.x+1][self.mouse.y]:
+		elif self.mouse.canGoRight() and not self.isVisited[self.mouse.x+1][self.mouse.y]:
 			self.path.append([self.mouse.x, self.mouse.y])
 			self.isVisited[self.mouse.x+1][self.mouse.y] = 1
 			self.mouse.goRight()
-		elif not self.mouse.canGoDown() and not self.isVisited[self.mouse.x][self.mouse.y+1]:
+		elif self.mouse.canGoDown() and not self.isVisited[self.mouse.x][self.mouse.y+1]:
 			self.path.append([self.mouse.x, self.mouse.y])
 			self.isVisited[self.mouse.x][self.mouse.y+1] = 1
 			self.mouse.goDown()
@@ -142,19 +142,19 @@ class StrategyTestMultiDFS(Strategy):
 			if otherMap['right']: self.mouse.mazeMap.setCellRightAsWall(cell)
 			recvData = self.network.retrieveData()
 
-		if not self.mouse.canGoLeft() and not self.isVisited[self.mouse.x-1][self.mouse.y]:
+		if self.mouse.canGoLeft() and not self.isVisited[self.mouse.x-1][self.mouse.y]:
 			self.path.append([self.mouse.x, self.mouse.y])
 			self.isVisited[self.mouse.x-1][self.mouse.y] = 1
 			self.mouse.goLeft()
-		elif not self.mouse.canGoUp() and not self.isVisited[self.mouse.x][self.mouse.y-1]:
+		elif self.mouse.canGoUp() and not self.isVisited[self.mouse.x][self.mouse.y-1]:
 			self.path.append([self.mouse.x, self.mouse.y])
 			self.isVisited[self.mouse.x][self.mouse.y-1] = 1
 			self.mouse.goUp()
-		elif not self.mouse.canGoRight() and not self.isVisited[self.mouse.x+1][self.mouse.y]:
+		elif self.mouse.canGoRight() and not self.isVisited[self.mouse.x+1][self.mouse.y]:
 			self.path.append([self.mouse.x, self.mouse.y])
 			self.isVisited[self.mouse.x+1][self.mouse.y] = 1
 			self.mouse.goRight()
-		elif not self.mouse.canGoDown() and not self.isVisited[self.mouse.x][self.mouse.y+1]:
+		elif self.mouse.canGoDown() and not self.isVisited[self.mouse.x][self.mouse.y+1]:
 			self.path.append([self.mouse.x, self.mouse.y])
 			self.isVisited[self.mouse.x][self.mouse.y+1] = 1
 			self.mouse.goDown()
@@ -197,19 +197,19 @@ class StrategyTestDFSEV3(Strategy):
 		self.mouse.senseWalls()
 		print(self.mouse.getCurrentCell().getWhichIsWall())
 
-		if not self.mouse.canGoLeft() and not self.isVisited[self.mouse.x-1][self.mouse.y]:
+		if self.mouse.canGoLeft() and not self.isVisited[self.mouse.x-1][self.mouse.y]:
 			self.path.append([self.mouse.x, self.mouse.y])
 			self.isVisited[self.mouse.x-1][self.mouse.y] = 1
 			self.mouse.goLeft()
-		elif not self.mouse.canGoUp() and not self.isVisited[self.mouse.x][self.mouse.y-1]:
+		elif self.mouse.canGoUp() and not self.isVisited[self.mouse.x][self.mouse.y-1]:
 			self.path.append([self.mouse.x, self.mouse.y])
 			self.isVisited[self.mouse.x][self.mouse.y-1] = 1
 			self.mouse.goUp()
-		elif not self.mouse.canGoRight() and not self.isVisited[self.mouse.x+1][self.mouse.y]:
+		elif self.mouse.canGoRight() and not self.isVisited[self.mouse.x+1][self.mouse.y]:
 			self.path.append([self.mouse.x, self.mouse.y])
 			self.isVisited[self.mouse.x+1][self.mouse.y] = 1
 			self.mouse.goRight()
-		elif not self.mouse.canGoDown() and not self.isVisited[self.mouse.x][self.mouse.y+1]:
+		elif self.mouse.canGoDown() and not self.isVisited[self.mouse.x][self.mouse.y+1]:
 			self.path.append([self.mouse.x, self.mouse.y])
 			self.isVisited[self.mouse.x][self.mouse.y+1] = 1
 			self.mouse.goDown()
@@ -295,19 +295,19 @@ class StrategyTestDFSDisplayEV3(Strategy):
 		sendData = {'x': self.mouse.x, 'y':self.mouse.y, 'up':self.mouse.canGoUp(), 'down':self.mouse.canGoDown(), 'left':self.mouse.canGoLeft(), 'right':self.mouse.canGoRight()}
 		self.network.sendStringData(sendData)
 
-		if not self.mouse.canGoLeft() and not self.isVisited[self.mouse.x-1][self.mouse.y]:
+		if self.mouse.canGoLeft() and not self.isVisited[self.mouse.x-1][self.mouse.y]:
 			self.path.append([self.mouse.x, self.mouse.y])
 			self.isVisited[self.mouse.x-1][self.mouse.y] = 1
 			self.mouse.goLeft()
-		elif not self.mouse.canGoUp() and not self.isVisited[self.mouse.x][self.mouse.y-1]:
+		elif self.mouse.canGoUp() and not self.isVisited[self.mouse.x][self.mouse.y-1]:
 			self.path.append([self.mouse.x, self.mouse.y])
 			self.isVisited[self.mouse.x][self.mouse.y-1] = 1
 			self.mouse.goUp()
-		elif not self.mouse.canGoRight() and not self.isVisited[self.mouse.x+1][self.mouse.y]:
+		elif self.mouse.canGoRight() and not self.isVisited[self.mouse.x+1][self.mouse.y]:
 			self.path.append([self.mouse.x, self.mouse.y])
 			self.isVisited[self.mouse.x+1][self.mouse.y] = 1
 			self.mouse.goRight()
-		elif not self.mouse.canGoDown() and not self.isVisited[self.mouse.x][self.mouse.y+1]:
+		elif self.mouse.canGoDown() and not self.isVisited[self.mouse.x][self.mouse.y+1]:
 			self.path.append([self.mouse.x, self.mouse.y])
 			self.isVisited[self.mouse.x][self.mouse.y+1] = 1
 			self.mouse.goDown()
