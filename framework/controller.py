@@ -90,8 +90,8 @@ class COREController(MotorController):
             self.xpos -= CORE_CELL_WIDTH
         else:
             self.xpos += CORE_CELL_WIDTH
-        print("coresendmsg -a " + controlNet + " node number=" + self.index + " xpos=" + str(self.xpos) + " ypos=" + str(self.ypos))
-        os.system("coresendmsg -a " + controlNet + " node number=" + self.index + " xpos=" + str(self.xpos) + " ypos=" + str(self.ypos))
+        print("coresendmsg -a " + self.controlNet + " node number=" + self.index + " xpos=" + str(self.xpos) + " ypos=" + str(self.ypos))
+        os.system("coresendmsg -a " + self.controlNet + " node number=" + self.index + " xpos=" + str(self.xpos) + " ypos=" + str(self.ypos))
 
 class EV3MotorController(MotorController):
     direction = 'up'    
