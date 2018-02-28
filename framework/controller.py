@@ -41,10 +41,11 @@ class COREController(MotorController):
     ypos = 25
     index = -1
 
-    def __init__(self, index, initPoint):
+    def __init__(self, index, initPoint, controlNet):
         self.index = index
         self.xpos += initPoint[0] * CORE_CELL_WIDTH
         self.ypos += initPoint[1] * CORE_CELL_HEIGHT
+        self.controlNet = controlNet
 
     def turnLeft(self):
         print('Turn Left')
@@ -89,8 +90,8 @@ class COREController(MotorController):
             self.xpos -= CORE_CELL_WIDTH
         else:
             self.xpos += CORE_CELL_WIDTH
-        print("coresendmsg -a 10.0.0.254 node number=" + self.index + " xpos=" + str(self.xpos) + " ypos=" + str(self.ypos))
-        os.system("coresendmsg -a 10.0.0.254 node number=" + self.index + " xpos=" + str(self.xpos) + " ypos=" + str(self.ypos))
+        print("coresendmsg -a " + controlNet + " node number=" + self.index + " xpos=" + str(self.xpos) + " ypos=" + str(self.ypos))
+        os.system("coresendmsg -a " + controlNet + " node number=" + self.index + " xpos=" + str(self.xpos) + " ypos=" + str(self.ypos))
 
 class EV3MotorController(MotorController):
     direction = 'up'    

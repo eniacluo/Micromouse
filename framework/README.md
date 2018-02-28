@@ -136,6 +136,10 @@ Replace some lines of following files corresponding to the path. DO NOT make you
 
 $ cd "path you downloaded"/Micromouse
 
+Here gives the configurations of demonstrating core_demo.py which is an coordinated DFS. 
+
+####Step 1: Let the MDR node runs Micromouse automatically by adding a customized service.
+
 $ sudo nano /etc/core/core.conf
 
 Uncomment the line of custom_services_dir and set:
@@ -147,13 +151,25 @@ $ nano ./preload.py
  
 _startup = ('**"full path of this folder"**/backservice.sh',) 
 
-$ nano $HOME/.core/nodes.conf
-
-change line: 4 { mdr mdr.gif mdr.gif {zebra OSPFv3MDR vtysh IPForward **MyService**}  netns {built-in type for wireless routers} }
-
 $ nano ./backservice.sh
 
 export ServiceHOME=**"full path of this folder"**/framework
+
+$ nano ~/.core/nodes.conf
+
+change line: 4 { mdr mdr.gif mdr.gif {zebra OSPFv3MDR vtysh IPForward **MyService**}  netns {built-in type for wireless routers} }
+
+$ chmod 755 \_\_init\_\_.py preload.py backservice.sh
+
+**To check whether the Micromouse service has been added, restart core-daemon and open CORE:**
+
+$ sudo service core-daemon restart
+
+$ core-gui
+
+Add a MDR node into the canvas and right-click the node, click *Serivce*. Now you can see *MyService* is appearing in the column of *Utility* and it has been enabled. Click the tool icon on the right of *MyService* and click the *Startup/shutdown* tab, you can see the complete path of *backservice.sh* is shown in the middle *Startup Commands* list. That marks the correct configurations of CORE.
+
+####Step 2: Modify paths within maze description file.
 
 $ nano ./maze.xml
 
@@ -165,23 +181,33 @@ change path of wallpaper:
 
 wallpaper {**"full path of this folder"**/mazes/2012japan-ef.png}
 
-#### Set file permission
+$ nano framework/core_demo.py
 
-$ chmod 755 \_\_init\_\_.py
+change path of maze file:
 
-$ chmod 755 preload.py
+mazeMap.readFromFile('**"full path of this folder"**/mazes/2012japan-ef.txt')
 
-$ chmod 755 backservice.sh
+####Step 3: Add ip address corresponding to node name for host name parsing.
 
-You don't need to re-set this setting every time you run this demo once set.
+$ sudo nano /etc/hosts
 
-$ sudo service core-daemon restart
+Append all the four nodes ip addresses and host names in the first part(ipv4) of file:
+10.0.0.1    n1
+10.0.0.2    n2
+10.0.0.3    n3
+10.0.0.4    n4
+
+####Step 4: Open CORE to demonstrate:
 
 $ core-gui
 
 Then open maze.xml, click the **Start session** button.
 
 ### Run in EV3
+
+$ nano controller.py
+
+Uncomment this line: from ev3dev.ev3 import *
 
 $ nano demo.py
 
