@@ -138,7 +138,7 @@ $ cd "path you downloaded"/Micromouse
 
 Here gives the configurations of demonstrating core_demo.py which is an coordinated DFS. 
 
-####Step 1: Let the MDR node runs Micromouse automatically by adding a customized service.
+#### Step 1: Let the MDR node runs Micromouse automatically by adding a customized service.
 
 $ sudo nano /etc/core/core.conf
 
@@ -169,7 +169,7 @@ $ core-gui
 
 Add a MDR node into the canvas and right-click the node, click *Serivce*. Now you can see *MyService* is appearing in the column of *Utility* and it has been enabled. Click the tool icon on the right of *MyService* and click the *Startup/shutdown* tab, you can see the complete path of *backservice.sh* is shown in the middle *Startup Commands* list. That marks the correct configurations of CORE.
 
-####Step 2: Modify paths within maze description file.
+#### Step 2: Modify paths within maze description file.
 
 $ nano ./maze.xml
 
@@ -187,7 +187,7 @@ change path of maze file:
 
 mazeMap.readFromFile('**"full path of this folder"**/mazes/2012japan-ef.txt')
 
-####Step 3: Open CORE to demonstrate:
+#### Step 3: Open CORE to demonstrate:
 
 $ core-gui
 
