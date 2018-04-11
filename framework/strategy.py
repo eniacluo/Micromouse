@@ -129,7 +129,7 @@ class StrategyTestMultiDFS(Strategy):
 	def go(self):
 		self.mouse.senseWalls()
 		print(self.mouse.getCurrentCell().getWhichIsWall())
-		sendData = {'x': self.mouse.x, 'y':self.mouse.y, 'up':self.mouse.canGoUp(), 'down':self.mouse.canGoDown(), 'left':self.mouse.canGoLeft(), 'right':self.mouse.canGoRight()}
+		sendData = {'x': self.mouse.x, 'y':self.mouse.y, 'up': not self.mouse.canGoUp(), 'down': not self.mouse.canGoDown(), 'left': not self.mouse.canGoLeft(), 'right': not self.mouse.canGoRight()}
 		self.network.sendStringData(sendData)
 		recvData = self.network.retrieveData()
 		while recvData:
