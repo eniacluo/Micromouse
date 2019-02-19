@@ -3,11 +3,11 @@ from task import NetworkInterface
 from map import Map
 from map_painter import MapPainter
 
-mazeMap = Map(8, 8, 40, 40)
+mazeMap = Map(16, 16)
 mapPainter = MapPainter(mazeMap)
 mapPainter.createWindow()
 mapPainter.drawMap()
-lastCell = mazeMap.getCell(2, 7)
+lastCell = mazeMap.getCell(0, 0)
 mapPainter.putRobotInCell(lastCell, 'yellow')
 
 network = NetworkInterface()
