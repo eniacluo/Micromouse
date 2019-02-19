@@ -150,6 +150,18 @@ Here gives the configurations of demonstrating core_demo.py which is an coordina
 
 Then open maze.xml, click the **Start session** button.
 
+#### Step 3: visualize the exploring results:
+
+Install python3-tk:
+
+    $ sudo apt-get install python3-tk
+
+Open the display.py before starting a session:
+
+    $ python3 display.py
+
+Use Ctrl + C to terminate.
+
 ### Run in EV3
 
     $ nano controller.py
