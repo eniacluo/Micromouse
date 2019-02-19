@@ -18,25 +18,25 @@
     <type domain="CORE">mdr</type>
     <alias domain="COREID">1</alias>
     <point lat="47.5787913618" lon="-122.1314904" type="gps"/>
-    <CORE:presentation icon="/home/zhiwei/Micromouse/icons/robotblu.png"/>
+    <CORE:presentation icon="/home/luozhiwei/Micromouse/icons/robotblu.png"/>
   </router>
   <router id="n2" name="n2">
     <type domain="CORE">mdr</type>
     <alias domain="COREID">2</alias>
     <point lat="47.5786398849" lon="-122.109970328" type="gps"/>
-    <CORE:presentation icon="/home/zhiwei/Micromouse/icons/robotgre.png"/>
+    <CORE:presentation icon="/home/luozhiwei/Micromouse/icons/robotgre.png"/>
   </router>
   <router id="n3" name="n3">
     <type domain="CORE">mdr</type>
     <alias domain="COREID">3</alias>
     <point lat="47.5692910308" lon="-122.131707313" type="gps"/>
-    <CORE:presentation icon="/home/zhiwei/Micromouse/icons/robotpur.png"/>
+    <CORE:presentation icon="/home/luozhiwei/Micromouse/icons/robotpur.png"/>
   </router>
   <router id="n4" name="n4">
     <type domain="CORE">mdr</type>
     <alias domain="COREID">4</alias>
     <point lat="47.5691120101" lon="-122.110111827" type="gps"/>
-    <CORE:presentation icon="/home/zhiwei/Micromouse/icons/robotyel.png"/>
+    <CORE:presentation icon="/home/luozhiwei/Micromouse/icons/robotyel.png"/>
   </router>
   <CORE:defaultservices>
     <device type="mdr">
@@ -54,7 +54,7 @@
     </options>
     <metadata>
       <parameter name="global_options">interface_names=no ip_addresses=yes ipv6_addresses=yes node_labels=yes link_labels=yes show_api=no background_images=no annotations=yes grid=no traffic_start=0</parameter>
-      <parameter name="canvas c1">{name {Canvas1}} {wallpaper-style {scaled}} {wallpaper {/home/zhiwei/Micromouse/mazes/2012japan-ef.png}} {size {1158 772}}</parameter>
+      <parameter name="canvas c1">{name {Canvas1}} {wallpaper-style {scaled}} {wallpaper {/home/luozhiwei/Micromouse/mazes/2012japan-ef.png}} {size {1158 772}}</parameter>
     </metadata>
   </CORE:sessionconfig>
 </scenario>
