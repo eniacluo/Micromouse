@@ -16,8 +16,12 @@ echo "The current folder is $path."
 
 if [ -e "/etc/core/core.conf" ]
 then
-    cp /etc/core/core.conf /etc/core/core.conf.backup
-    sed -i "/custom_services_dir/ s/= .*/= $path/" /etc/core/core.conf
+    if [ ! -e "/etc/core/core.conf.backup" ]
+    then
+        cp /etc/core/core.conf /etc/core/core.conf.backup
+    fi
+    sed -i "/custom_services_dir/ s@= .*@= $path@" /etc/core/core.conf
+    sed -i "/custom_services_dir/ s@[# ]*@@" /etc/core/core.conf
     sed -i "/listenaddr/ s/= .*/= 0.0.0.0/" /etc/core/core.conf
     if [ $? != 0 ]
     then
@@ -31,13 +35,13 @@ fi
 
 if [ -e "$path/preload.py" ]
 then
-    sed -i "/_startup/ s/=(.*)/=(\'$path\/backservice.sh\',)/" $path/preload.py
+    sed -i "/_startup/ s@(.*)@(\'$path\/backservice.sh\',)@" $path/preload.py
     if [ $? != 0 ]
     then
         echo "preload.py modified failed. Try to maunally modifify."
         exit 5
     else
-        chmod 755 $path/preload.sh
+        chmod 755 "$path/preload.py"
     fi
 else
     echo "preload.py missing. Put this file to the current path and try again."
@@ -46,13 +50,13 @@ fi
 
 if [ -e "$path/backservice.sh" ]
 then
-    sed -i "/ServiceHOME/ s/=.*/=$path\/framework/" $path/backservice.sh
+    sed -i "/ServiceHOME/ s@=.*@=$path\/framework@" $path/backservice.sh
     if [ $? != 0 ]
     then
         echo "backservice.sh modified failed. Try to maunally modifify."
         exit 6
     else
-        chmod 755 $path/backsevice.sh
+        chmod 755 "$path/backservice.sh"
     fi
 else
     echo "backservice.sh missing. Put this file to the current path and try again."
@@ -61,8 +65,11 @@ fi
 
 if [ -e "$HOME/.core/nodes.conf" ]
 then
-    cp $HOME/.core/nodes.conf $HOME/.core/nodes.conf.backup
-    sed -i "4 s/IPForward [A-Za-z]*}/IPForward MyService}/" $HOME/.core/nodes.conf
+    if [ ! -e "$HOME/.core/nodes.conf.backup" ]
+    then
+        cp $HOME/.core/nodes.conf $HOME/.core/nodes.conf.backup
+    fi
+    sed -i "6 s/IPForward[ A-Za-z]*}/IPForward MyService}/" $HOME/.core/nodes.conf
     if [ $? != 0 ]
     then
         mv $HOME/.core/nodes.conf.backup $HOME/.core/nodes.conf
@@ -74,16 +81,28 @@ else
     exit 9
 fi
 
-chmod 755 __init__.py
+if [ -e "$path/__init__.py" ]
+then
+    chmod 755 __init__.py
+else
+    echo "__init__.py is missing. Try again later."
+    exit 14
+fi
 
-service restart core-daemon restart
+echo "Completed setting up the CORE configuration files. Restart daemon now."
+service core-daemon restart
+if [ $? != 0 ]
+then
+    echo "service restart failed. Did you start core-daemon service? Start manually: sudo service core-daemon start. You can also reinstall CORE and try again."
+    exit 15
+fi
 
 # The following modification is for maze file
 
 if [ -e "$path/maze.xml" ]
 then
-    sed -i "/name=\"icon\"/ s/value=\".*\/icons\//value=\"$path\/icons\//" $HOME/.core/nodes.conf
-    sed -i "/wallpaper/ s/{.*\/mazes/{$path\/mazes/" $HOME/.core/nodes.conf
+    sed -i "/icon/ s@icon=\".*\/icons\/@icon=\"$path\/icons\/@" "$path/maze.xml"
+    sed -i "/wallpaper/ s@wallpaper {.*\/mazes@wallpaper {$path\/mazes@" "$path/maze.xml"
     if [ $? != 0 ]
     then
         echo "$path/maze.xml modified failed. Try to maunally modifify."
@@ -94,9 +113,9 @@ else
     exit 11
 fi
 
-if [ -e "$path/framwork/core_demo.py" ]
+if [ -e "$path/framework/core_demo.py" ]
 then
-    sed -i "/readFromFile/ s/(\'.*\/mazes/(\'$path\/mazes/" $path/framework/core_demo.py
+    sed -i "/readFromFile/ s@(.*\/mazes@(\'$path\/mazes@" "$path/framework/core_demo.py"
     if [ $? != 0 ]
     then
         echo "$path/framework/core_demo.py modified failed. Try to maunally modifify this line:\n\tmazeMap.readFromFile('<the current path>/maze/2012japan-ef.txt')"
@@ -105,13 +124,21 @@ then
 else
     echo "$path/framework/core_demo.py missing. Try again."
     exit 13
+fi
 
 # gethostname() used in the python file sometimes not working if there are no address resolution in /etc/hosts
-cp /etc/hosts /etc/hosts.backup
-for i in 1 2 3 4
-do
-    echo "10.0.0.$i\tn$i" >> /etc/hosts
-done
+if [ ! -e "/etc/hosts.backup" ]
+then
+    cp /etc/hosts /etc/hosts.backup
+fi
+
+if [ -z "`cat /etc/hosts | grep 10.0.0.1`" ]
+then
+    for i in 1 2 3 4
+    do
+        echo "10.0.0.$i\tn$i" >> /etc/hosts
+    done
+fi
 
 echo "The environment is successfully set up for running core_demo.py."
 echo "Open maze.xml and click Start Session button to demo."
