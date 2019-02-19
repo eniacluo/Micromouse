@@ -77,7 +77,7 @@ then
         exit 8
     fi
 else
-    echo "$HOME/.core/nodes.conf missing. Open core-gui and it may generate this file. Otherwise, reinstall CORE and try again."
+    echo "$HOME/.core/nodes.conf missing. Reinstall CORE and try again."
     exit 9
 fi
 
@@ -101,16 +101,7 @@ fi
 
 if [ -e "$path/maze.xml" ]
 then
-    version="`core-daemon -h | grep CORE | cut -f3 -d ' '`"
-    echo "CORE version is $version."
-    if [ $version = "v.4.6" ] || [ $version = "v.4.7" ] && [ -e "$path/maze_v4.6.xml" ]
-    then
-        mv maze.xml maze_v4.8.xml
-        mv maze_v4.6.xml maze.xml
-        sed -i "/icon/ s@value=\".*\/icons\/@value=\"$path\/icons\/@" "$path/maze.xml"
-    else
-        sed -i "/icon/ s@icon=\".*\/icons\/@icon=\"$path\/icons\/@" "$path/maze.xml"
-    fi
+    sed -i "/icon/ s@icon=\".*\/icons\/@icon=\"$path\/icons\/@" "$path/maze.xml"
     sed -i "/wallpaper/ s@wallpaper {.*\/mazes@wallpaper {$path\/mazes@" "$path/maze.xml"
     if [ $? != 0 ]
     then

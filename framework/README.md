@@ -140,7 +140,7 @@ Here gives the configurations of demonstrating core_demo.py which is an coordina
 
 #### Step 1: Configure the CORE environment for running core_demo.py 
 
-    $ sudo ./set_CORE.sh
+    $ sudo ./setCORE.sh
 
 *If you encounter any problems running the above script, see README_old.md to manually configure.*
 
