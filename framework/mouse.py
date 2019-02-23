@@ -1,10 +1,21 @@
 #!/usr/bin/env python3
+"""
+This is for testing the sphinx.
+"""
 
 #Author: Zhiwei Luo
 
 from task import TaskLoader, Task, CommandTranslator, WallDetector
 
 class Micromouse:
+	"""
+	The Micromouse represents an agent to perfrom tasks. It maintains:
+		* a map
+		* a task loader
+		* a command translator
+		* a wall detector
+		* the direction it faces
+	"""
 	x = -1
 	y = -1
 	mazeMap = None
@@ -20,6 +31,9 @@ class Micromouse:
 		self.initWallDetector()
 
 	def setInitPoint(self, x, y):
+		"""
+		InitPoint
+		"""
 		if x >= 0 and x < self.mazeMap.width:
 			self.x = x
 		else:
