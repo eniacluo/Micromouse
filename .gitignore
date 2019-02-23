@@ -1,4 +1,6 @@
 *.pyc
+.DS_Store
+docs/.DS_Store
 Hardware/
 __pycache__/
 status-Luo.pptx
