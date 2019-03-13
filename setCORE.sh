@@ -77,7 +77,7 @@ then
         exit 8
     fi
 else
-    echo "$HOME/.core/nodes.conf missing. Reinstall CORE and try again."
+    echo "$HOME/.core/nodes.conf missing. Open core-gui and it may generate this file. Otherwise, reinstall CORE and try again."
     exit 9
 fi
 
