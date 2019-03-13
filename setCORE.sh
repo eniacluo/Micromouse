@@ -101,8 +101,21 @@ fi
 
 if [ -e "$path/maze.xml" ]
 then
-    sed -i "/icon/ s@icon=\".*\/icons\/@icon=\"$path\/icons\/@" "$path/maze.xml"
-    sed -i "/wallpaper/ s@wallpaper {.*\/mazes@wallpaper {$path\/mazes@" "$path/maze.xml"
+	version=$(core-daemon -h | grep "CORE daemon" | cut -f3 -d' ')
+	echo "Your CORE daemon version is $version."
+	if { [ $version = "v.4.6" ] || [ $version = "v.4.7" ] ;} && [ -e "maze_v4.6.xml" ]
+	then
+		mv maze.xml maze_v4.8.xml
+		mv maze_v4.6.xml maze.xml
+		sed -i "/icon/ s@value=\".*\/icons\/@value=\"$path\/icons\/@" "$path/maze.xml"
+		sed -i "/wallpaper/ s@wallpaper {.*\/mazes@wallpaper {$path\/mazes@" "$path/maze.xml"
+	elif [ $version = "v.4.8" ]
+	then
+		sed -i "/icon/ s@icon=\".*\/icons\/@icon=\"$path\/icons\/@" "$path/maze.xml"
+    	sed -i "/wallpaper/ s@wallpaper {.*\/mazes@wallpaper {$path\/mazes@" "$path/maze.xml"
+	else
+		echo "The CORE daemon is too old. You may need to install >= v4.6."
+	fi
     if [ $? != 0 ]
     then
         echo "$path/maze.xml modified failed. Try to maunally modifify."
