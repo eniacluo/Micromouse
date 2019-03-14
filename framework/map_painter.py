@@ -13,8 +13,8 @@ class MapPainter:
 		self.width = 40
 
 	def __init__(self, mapDraw):
-		self.height = mapDraw.cellHeight
-		self.width = mapDraw.cellWidth
+		self.height = 40
+		self.width = 40
 		self.mapDraw = mapDraw
 
 	def setCellHeight(self, height):
