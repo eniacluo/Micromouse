@@ -126,16 +126,16 @@ else
     exit 11
 fi
 
-if [ -e "$path/framework/core_demo.py" ]
+if [ -e "$path/framework/demo_core.py" ]
 then
-    sed -i "/readFromFile/ s@(.*\/mazes@(\'$path\/mazes@" "$path/framework/core_demo.py"
+    sed -i "/readFromFile/ s@(.*\/mazes@(\'$path\/mazes@" "$path/framework/demo_core.py"
     if [ $? != 0 ]
     then
-        echo "$path/framework/core_demo.py modified failed. Try to maunally modifify this line:\n\tmazeMap.readFromFile('<the current path>/maze/2012japan-ef.txt')"
+        echo "$path/framework/demo_core.py modified failed. Try to maunally modifify this line:\n\tmazeMap.readFromFile('<the current path>/maze/2012japan-ef.txt')"
         exit 12
     fi
 else
-    echo "$path/framework/core_demo.py missing. Try again."
+    echo "$path/framework/demo_core.py missing. Try again."
     exit 13
 fi
 
@@ -153,6 +153,6 @@ then
     done
 fi
 
-echo "The environment is successfully set up for running core_demo.py."
+echo "The environment is successfully set up for running demo_core.py."
 echo "Open maze.xml and click Start Session button to demo."
 

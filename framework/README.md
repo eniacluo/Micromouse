@@ -4,30 +4,23 @@
     ├── __init__.py             //module automatically read by CORE when core-gui opens
     ├── preload.py              //MyService class as an extra service that can be added into CORE, pointered by __init__.py
     │                             and it specifies the starting program. Here it's the backservice.sh
-    │                             Calling Relations: CORE -> __init__.py -> preload.py -> backservice.sh -> core_demo.py
+    │                             Calling Relations: CORE -> __init__.py -> preload.py -> backservice.sh -> demo_core.py
     ├── framework               //framework written in Python3
-    │   ├── controller.py       //Control Layer: MotorController, SensorController, COREController, 
-    │   │                                        EV3MotorController, EV3SensorController
-    │   ├── core_demo.py        //Example of demonstrating multi-agent DFS in CORE
-    │   ├── demo.py             //Example of demonstrating multi-agent DFS in EV3-Lego robot
-    │   ├── display.py          //GUI program showing the discovery of micromouse in real maze
-    │   ├── map_painter.py      //The painting tool for presenting the maze written
-    │   ├── map.py              //Active Layer: MazeMap, which contains the classes of Map and Cell
+    │   ├── controller.py       //Base class of MotorController and SensorController
+    │   ├── controller_core.py  //MotorController and SensorController for CORE
+    │   ├── controller_ev3.py   //MotorController and SensorController for EV3-Lego
+    │   ├── demo_core.py        //Example of demonstrating multi-agent DFS in CORE
+    │   ├── demo_ev3.py         //Example of demonstrating multi-agent DFS in EV3-Lego robot
+    │   ├── gui.py              //GUI program showing the discovery of micromouse in real maze
+    │   ├── map.py              //Contains the classes of Map and Cell
     │   ├── mouse.py            //The Micromouse class for managing all the modules
+    │   ├── network.py          //Network Interface for communications between Micromice
     │   ├── README.md
-    │   ├── strategy.py         //Active Layer: Various of testing cases of Strategy
-    │   └── task.py             //Task Layer: TaskLoader, Task, WallDetector, CommandTranslator, NetworkInterface
+    │   └── strategy.py         //Active Layer: Various of testing cases of Strategy
     ├── icons                   //folder for icons of mice shown in CORE
-    │   ├── robotblu.png
-    │   └── (...png files...)
     ├── mazes                   //folder for maze examples that png files are pictures for backgrounds and txt files 
-    │   │                         are corresponding maze presented in (*, |, etc) which should be parsed by a function. 
-    │   │                         See map.py -> readFromFile as a parser example.
-    │   ├── 2009japan-b.png
-    │   ├── 2009japanb.txt
-    │   ├── 2010japan.png
-    │   ├── 2010japan.txt
-    │   └── (...png file and txt file...)
+    │                             are corresponding maze presented in (*, |, etc) which should be parsed by a function. 
+    │                             See map.py -> readFromFile as a parser example.
     ├── maze.xml                //layout file opened and saved by CORE
     └── old_version             //deprecated code, please ignore it
         ├── stop.py
@@ -114,35 +107,34 @@ If you are going to demonstrate in CORE or EV3, you can directly utilize the *CO
     from mouse import Micromouse;
     from strategy import StrategyTestDFS;
 
-    def myMouse():
-        mazeMap = Map(16, 16)                           # Specify the size of maze map, ignore the last two arguments.
-        micromouse = Micromouse(mazeMap)                # Create a micromouse with the empty map
-        micromouse.setInitPoint(0, 0)                   # Tell the micromouse the origin coordinate
-        micromouse.addTask(StrategyTestDFS(micromouse)) # Use the created Strategy with this micromouse instance to add a Task
-        micromouse.run()                                # The TaskLoader will run the tasks you have added
+    mazeMap = Map(16, 16)                           # Specify the size of maze map, ignore the last two arguments.
+    micromouse = Micromouse(mazeMap)                # Create a micromouse with the empty map
+    micromouse.setInitPoint(0, 0)                   # Tell the micromouse the origin coordinate
+    micromouse.addTask(StrategyTestDFS(micromouse)) # Use the created Strategy with this micromouse instance to add a Task
+    micromouse.run()                                # The TaskLoader will run the tasks you have added
 
 ## Demonstrations
 
-Please read core_demo.py and demo.py to see how to use the framework. 
-core_demo.py is used for running the DFS in CORE. The set-up steps are as follows:
+Please read demo_core.py and demo_ev3.py to see how to use the framework. 
+demo_core.py is used for running the DFS in CORE. The set-up steps are as follows:
 
 ### Run in CORE
 
-First make sure that CORE has been installed. If you have not installed CORE, follow https://docs.google.com/document/d/1LPkPc2lbStwFtiukYfCxhcW7KewD028XzNfMd20uFFA/ to install.
+If you have not installed CORE, follow [CORE Tutorial](https://docs.google.com/document/d/1LPkPc2lbStwFtiukYfCxhcW7KewD028XzNfMd20uFFA/) to install.
 
-Download the Micromouse framework from https://github.com/eniacluo/Micromouse. DO NOT only download the framework folder because the maze file examples are not included.
+Download the Micromouse framework from [Micromouse Github Page](https://github.com/eniacluo/Micromouse). 
 
 Replace some lines of following files corresponding to the path. DO NOT make your path of Micromouse framework too long and sometimes it does not work if there are *special characters* like underscore or slash in the full path. 
 
-$ cd "path you downloaded"/Micromouse
+$ cd /path/of/Micromouse
 
-Here gives the configurations of demonstrating core_demo.py which is an coordinated DFS. 
+Here gives the configurations of demonstrating demo_core.py which is an coordinated DFS. 
 
-#### Step 1: Configure the CORE environment for running core_demo.py 
+#### Step 1: Configure the CORE environment for running demo_core.py 
 
     $ sudo ./setCORE.sh
 
-*If you encounter any problems running the above script, see README_old.md to manually configure.*
+*If you encounter any problems running the above script, see next section to manually configure CORE.*
 
 #### Step 2: Open CORE to demonstrate:
 
@@ -156,17 +148,13 @@ Install python3-tk:
 
     $ sudo apt-get install python3-tk
 
-Open the display.py before starting a session:
+Open the gui.py before starting a session:
 
-    $ python3 display.py
+    $ python3 gui.py
 
 Use Ctrl + C to terminate.
 
 ### Run in EV3
-
-    $ nano controller.py
-
-Uncomment this line: from ev3dev.ev3 import *
 
     $ nano demo.py
 
@@ -188,7 +176,78 @@ Add the task with written Strategy instance:
 
 Download the framework folder into the EV3 robot.
 
-Press the center button of EV3 to boot and wait until the main menu appears. Choose File *browser->demo.py*. Click the center button to start. The light may turn orange if everything is good. It is not necessarily that two mice start at exact the same time.
+Press the center button of EV3 to boot and wait until the main menu appears. Choose File *browser->demo_ev3.py*. Click the center button to start. The light may turn orange if everything is good. It is not necessarily that two mice start at exact the same time.
+
+## Manually Configure CORE
+
+*If setCORE.sh is not working, follow these steps to manually configure CORE.*
+
+### Step 1: Let the MDR node runs Micromouse automatically by adding a customized service.
+
+    $ sudo nano /etc/core/core.conf
+
+Uncomment the line of custom_services_dir and set:
+
+    custom_services_dir = /path/of/Micromouse
+    listenaddr = 0.0.0.0
+
+Then,
+
+    $ nano ./preload.py
+
+Modify this line:
+
+    _startup = ('/path/of/Micromouse/backservice.sh',) 
+
+Also,
+
+    $ nano ./backservice.sh
+
+Modify this line:
+
+    export ServiceHOME=/path/of/Micromouse/framework
+
+Add MyService to *nodes.conf*,
+
+    $ nano ~/.core/nodes.conf
+
+change line: 4 { mdr mdr.gif mdr.gif {zebra OSPFv3MDR vtysh IPForward **MyService**}  netns {built-in type for wireless routers} }
+
+    $ chmod 755 __init__.py preload.py backservice.sh
+
+**To check whether the Micromouse service has been added, restart core-daemon and open CORE:**
+
+    $ sudo service core-daemon restart
+
+    $ core-gui
+
+Add a MDR node into the canvas and right-click the node, click *Serivce*. Now you can see *MyService* is appearing in the column of *Utility* and it has been enabled. Click the tool icon on the right of *MyService* and click the *Startup/shutdown* tab, you can see the complete path of *backservice.sh* is shown in the middle *Startup Commands* list. That marks the correct configurations of CORE.
+
+## Step 2: Modify paths within maze description file.
+
+    $ nano ./maze.xml
+
+change paths of 4 icons:
+
+    name="icon" value="/path/of/Micromouse/icons/robot***.png"
+
+change path of wallpaper:
+
+    wallpaper {/path/of/Micromouse/mazes/2012japan-ef.png}
+
+Finally,
+
+    $ nano framework/demo_core.py
+
+change path of maze file:
+
+    mazeMap.readFromFile('/path/of/Micromouse/mazes/2012japan-ef.txt')
+
+#### Step 3: Open CORE to demonstrate:
+
+    $ core-gui
+
+Then open maze.xml, click the **Start session** button.
 
 ## Documentation for framework
 
