@@ -16,11 +16,11 @@
 ## Tutorial
 Refer to [Tutorial](https://eniacluo.github.io/Micromouse/guide/tutorial.html).
 
-## Example
-Refer to [Example](https://eniacluo.github.io/Micromouse/guide/tutorial.html#example).
-
 ## Demonstrations
 Refer to [Demonstrations](https://eniacluo.github.io/Micromouse/guide/tutorial.html#demonstrations).
 
+## API Documentation
+Refer to [API Documentation](https://eniacluo.github.io/Micromouse/modules/docs.html).
+
 ## Architecture Description
-Refer to [Demonstrations](https://docs.google.com/document/d/1im-nFw-iO0sKvpq5XH-agR5obBuFwbSLMbefUWsbebQ/edit#).
+Refer to [Architecture Description](https://docs.google.com/document/d/1im-nFw-iO0sKvpq5XH-agR5obBuFwbSLMbefUWsbebQ/edit#).
