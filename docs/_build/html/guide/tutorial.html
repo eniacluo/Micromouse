@@ -47,40 +47,14 @@
             
   <div class="section" id="tutorial">
 <h1>Tutorial<a class="headerlink" href="#tutorial" title="Permalink to this headline">¶</a></h1>
-<dl class="docutils">
-<dt>To make a new algorithm for running a micromouse, you need to do the following steps:</dt>
-<dd><ol class="first arabic simple">
-<li>Write your own strategy inheriting from class Strategy and overrides the functions:</li>
-</ol>
+<p>To design a new algorithm for running a micromouse, you need to write your own strategy inheriting from class <strong>Strategy</strong> and overrides the functions:</p>
 <blockquote>
 <div><ul class="simple">
 <li><em>checkFinished()</em></li>
 <li><em>go()</em>.</li>
 </ul>
 </div></blockquote>
-<ol class="arabic simple" start="2">
-<li>Write your own MotorController inheriting from class <strong>MotorController</strong> and <strong>SensorController</strong> for your hardware - robot. You need to overrides the functions in <strong>MotorController</strong>:</li>
-</ol>
-<blockquote>
-<div><ul class="simple">
-<li><em>turnLeft()</em></li>
-<li><em>turnRight()</em></li>
-<li><em>turnAround()</em></li>
-<li><em>goStraight()</em></li>
-</ul>
-<p>and functions in <strong>SensorController</strong>:</p>
-<ul class="simple">
-<li><em>senseLeft()</em></li>
-<li><em>senseRight()</em></li>
-<li><em>senseFront()</em></li>
-<li><em>senseBack()</em></li>
-</ul>
-</div></blockquote>
-<ol class="last arabic simple" start="3">
-<li>Write a starting class or function to create a micromouse to run.</li>
-</ol>
-</dd>
-</dl>
+<p>Create a python file and write a function to create a micromouse to run.</p>
 <div class="section" id="example">
 <h2>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
 <p>DFS algorithm for one mouse traversing the maze.</p>
@@ -144,9 +118,7 @@
         <span class="n">sleep</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span> <span class="c1"># Delay for better demonstration</span>
 </pre></div>
 </div>
-<p><strong>Step 2</strong>: Write your own motor controller inheriting from class <strong>MotorController</strong> and <strong>SensorController</strong> for your hardware - robot. You need to overrides the functions: <em>turnLeft()</em>, <em>turnRight()</em>, <em>turnAround()</em>, <em>goStraight()</em> in Motor Controller and <em>senseLeft()</em>, <em>senseRight()</em>,  <em>senseFront()</em>, <em>senseBack()</em> from Sensor Controller.</p>
-<p>If you are going to demonstrate in CORE or EV3, you can directly utilize the <strong>COREController</strong> and <strong>EV3MotorController</strong>, <strong>EV3SensorController</strong> in <em>controller.py</em> and skip this step. The mentioned functions are atomic procedures for Task Layer to call so that when writting a strategy, you can just call <em>senseWalls()</em>, <em>goLeft()</em>, <em>goRight()</em>, <em>goUp()</em> or <em>goDown()</em> in <strong>Micromouse</strong> class without considering the direction it faces and writing code of manipulating the hardware.</p>
-<p><strong>Step 3</strong>: Write a function to create a micromouse to run.</p>
+<p>Write a function to create a micromouse to run.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">map</span> <span class="k">import</span> <span class="n">Map</span><span class="p">;</span>
 <span class="kn">from</span> <span class="nn">mouse</span> <span class="k">import</span> <span class="n">Micromouse</span><span class="p">;</span>
 <span class="kn">from</span> <span class="nn">strategy</span> <span class="k">import</span> <span class="n">StrategyTestDFS</span><span class="p">;</span>
@@ -160,9 +132,80 @@
 </pre></div>
 </div>
 </div>
+<div class="section" id="customized-platforms">
+<h2>Customized Platforms<a class="headerlink" href="#customized-platforms" title="Permalink to this headline">¶</a></h2>
+<p>If you are going to demonstrate in CORE or EV3, you can directly utilize the <strong>COREController</strong> and <strong>EV3MotorController</strong>, <strong>EV3SensorController</strong> in <em>controller.py</em> and skip this step. The mentioned functions are atomic procedures for Task Layer to call so that when writting a strategy, you can just call <em>senseWalls()</em>, <em>goLeft()</em>, <em>goRight()</em>, <em>goUp()</em> or <em>goDown()</em> in <strong>Micromouse</strong> class without considering the direction it faces and writing code of manipulating the hardware.</p>
+<p>If you have your own hardware platform or emulation software, write your own MotorController inheriting from class <strong>MotorController</strong> and <strong>SensorController</strong> for your hardware - robot. You need to override the functions in <strong>MotorController</strong>:</p>
+<blockquote>
+<div><ul class="simple">
+<li><em>turnLeft()</em></li>
+<li><em>turnRight()</em></li>
+<li><em>turnAround()</em></li>
+<li><em>goStraight()</em></li>
+</ul>
+</div></blockquote>
+<p>and functions in <strong>SensorController</strong>:</p>
+<blockquote>
+<div><ul class="simple">
+<li><em>senseLeft()</em></li>
+<li><em>senseRight()</em></li>
+<li><em>senseFront()</em></li>
+<li><em>senseBack()</em></li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="debugging-in-core-emulator">
+<h2>Debugging in CORE emulator<a class="headerlink" href="#debugging-in-core-emulator" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="replace-your-map">
+<h2>Replace your Map<a class="headerlink" href="#replace-your-map" title="Permalink to this headline">¶</a></h2>
+<p>In <em>core_demo.py</em>,</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mazeMap</span> <span class="o">=</span> <span class="n">Map</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">16</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>creates a new empty map with height=16 and width=16.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mazeMap</span><span class="o">.</span><span class="n">readFromFile</span><span class="p">(</span><span class="s1">&#39;/home/zhiwei/Micromouse/mazes/2012japan-ef.txt&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>loads a map from a text file into micromouse’s memory. You may replace the text file with your customized map. The folder <em>mazes</em> also includes a set of maps both in text format and a png file which is used for visualization in CORE.</p>
+<a class="reference internal image-reference" href="../_images/menu_wallpaper.png"><img alt="../_images/menu_wallpaper.png" src="../_images/menu_wallpaper.png" style="height: 200px;" /></a>
+</div>
+<div class="section" id="communications-guide">
+<h2>Communications Guide<a class="headerlink" href="#communications-guide" title="Permalink to this headline">¶</a></h2>
+<p>The communications between micromouses are based on <a class="reference external" href="https://docs.python.org/2/howto/sockets.html">Socket Programming</a>. The network module gives the high level APIs for micromouse to broadcast or receive packets. To use this module, you need to create an instance of NetworkInterface, and initiate the socket:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">network</span> <span class="k">import</span> <span class="n">NetworkInterface</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">network</span> <span class="o">=</span> <span class="n">NetworkInterface</span><span class="p">()</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">network</span><span class="o">.</span><span class="n">initSocket</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>If you need to enable the socket to receive data, you also need to start the receiving thread to prevent blocking the main thread.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="bp">self</span><span class="o">.</span><span class="n">network</span><span class="o">.</span><span class="n">startReceiveThread</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>If you need to send information in string, you can use <code class="docutils literal notranslate"><span class="pre">network.sendStringData(your_data)</span></code>. For simplicity, you can use a dictionary which is the built-in data structure of Python. The framework will serialize the dictionary to a string to send. For example, usually the micromouses need to broadcast their current locations:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">myLocation</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;x&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">mouse</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">mouse</span><span class="o">.</span><span class="n">y</span><span class="p">}</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">network</span><span class="o">.</span><span class="n">sendStringData</span><span class="p">(</span><span class="n">myLocation</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>If you need to receive information from your neighboring micromouses, you can use <code class="docutils literal notranslate"><span class="pre">network.retrieveData()</span></code>.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">receivedLocation</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">network</span><span class="o">.</span><span class="n">retrieveData</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">((</span><span class="n">receivedLocation</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">],</span> <span class="n">receivedLocation</span><span class="p">[</span><span class="s1">&#39;y&#39;</span><span class="p">]))</span>
+</pre></div>
+</div>
+<p>The broadcasting packets are not only sent to the your neighboring micromouse, <strong>but also sent to yourself</strong>. To distinguish who sends the packet, you can put the unique entity, e.g., IP address of the micromouse, into the packet.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">myLocation</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">network</span><span class="o">.</span><span class="n">myIPAddr</span><span class="p">,</span> <span class="n">x</span><span class="s1">&#39;: self.mouse.x, &#39;</span><span class="n">y</span><span class="s1">&#39;: self.mouse.y}</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">network</span><span class="o">.</span><span class="n">sendStringData</span><span class="p">(</span><span class="n">myLocation</span><span class="p">)</span>
+<span class="n">receivedLocation</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">network</span><span class="o">.</span><span class="n">retrieveData</span><span class="p">()</span>
+<span class="k">if</span> <span class="n">receivedLocation</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">network</span><span class="o">.</span><span class="n">myIPAddr</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;This packet is not from myself!&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="set-the-communication-range">
+<h2>Set the Communication Range<a class="headerlink" href="#set-the-communication-range" title="Permalink to this headline">¶</a></h2>
+</div>
 <div class="section" id="demonstrations">
 <h2>Demonstrations<a class="headerlink" href="#demonstrations" title="Permalink to this headline">¶</a></h2>
-<p>Please read <em>core_demo.py</em> and <em>demo.py</em> to see how to use the framework.</p>
 <p><em>core_demo.py</em> is used for running the DFS in <strong>CORE</strong>.</p>
 <p><em>demo.py</em> is used for running the DFS in <strong>EV3</strong>.</p>
 <div class="section" id="run-in-core">
@@ -315,6 +358,11 @@ $ core-gui
   <ul>
 <li><a class="reference internal" href="#">Tutorial</a><ul>
 <li><a class="reference internal" href="#example">Example</a></li>
+<li><a class="reference internal" href="#customized-platforms">Customized Platforms</a></li>
+<li><a class="reference internal" href="#debugging-in-core-emulator">Debugging in CORE emulator</a></li>
+<li><a class="reference internal" href="#replace-your-map">Replace your Map</a></li>
+<li><a class="reference internal" href="#communications-guide">Communications Guide</a></li>
+<li><a class="reference internal" href="#set-the-communication-range">Set the Communication Range</a></li>
 <li><a class="reference internal" href="#demonstrations">Demonstrations</a><ul>
 <li><a class="reference internal" href="#run-in-core">Run in CORE</a></li>
 <li><a class="reference internal" href="#run-in-ev3">Run in EV3</a></li>

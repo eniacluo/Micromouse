@@ -2,27 +2,12 @@
 Tutorial
 ***************************
 
-To make a new algorithm for running a micromouse, you need to do the following steps:
-  1. Write your own strategy inheriting from class Strategy and overrides the functions:
+To design a new algorithm for running a micromouse, you need to write your own strategy inheriting from class **Strategy** and overrides the functions:
 
     - *checkFinished()* 
     - *go()*.
 
-  2. Write your own MotorController inheriting from class **MotorController** and **SensorController** for your hardware - robot. You need to overrides the functions in **MotorController**:
-
-    - *turnLeft()*
-    - *turnRight()*
-    - *turnAround()*
-    - *goStraight()* 
-
-    and functions in **SensorController**:
-
-    - *senseLeft()*
-    - *senseRight()*
-    - *senseFront()*
-    - *senseBack()*
-
-  3. Write a starting class or function to create a micromouse to run.
+Create a python file and write a function to create a micromouse to run.
 
 Example
 ==========================
@@ -93,11 +78,7 @@ Let’s suppose we write a class inherits from **Strategy** as follows: (copied 
 
             sleep(0.5) # Delay for better demonstration
 
-**Step 2**: Write your own motor controller inheriting from class **MotorController** and **SensorController** for your hardware - robot. You need to overrides the functions: *turnLeft()*, *turnRight()*, *turnAround()*, *goStraight()* in Motor Controller and *senseLeft()*, *senseRight()*,  *senseFront()*, *senseBack()* from Sensor Controller.
-
-If you are going to demonstrate in CORE or EV3, you can directly utilize the **COREController** and **EV3MotorController**, **EV3SensorController** in *controller.py* and skip this step. The mentioned functions are atomic procedures for Task Layer to call so that when writting a strategy, you can just call *senseWalls()*, *goLeft()*, *goRight()*, *goUp()* or *goDown()* in **Micromouse** class without considering the direction it faces and writing code of manipulating the hardware.
-
-**Step 3**: Write a function to create a micromouse to run.
+Write a function to create a micromouse to run.
 
 ::
 
@@ -112,10 +93,89 @@ If you are going to demonstrate in CORE or EV3, you can directly utilize the **C
         micromouse.addTask(StrategyTestDFS(micromouse)) # Use the created Strategy with this micromouse instance to add a Task
         micromouse.run()                                # The TaskLoader will run the tasks you have added
 
-Demonstrations
+Customized Platforms
+==========================
+If you are going to demonstrate in CORE or EV3, you can directly utilize the **COREController** and **EV3MotorController**, **EV3SensorController** in *controller.py* and skip this step. The mentioned functions are atomic procedures for Task Layer to call so that when writting a strategy, you can just call *senseWalls()*, *goLeft()*, *goRight()*, *goUp()* or *goDown()* in **Micromouse** class without considering the direction it faces and writing code of manipulating the hardware.
+
+If you have your own hardware platform or emulation software, write your own MotorController inheriting from class **MotorController** and **SensorController** for your hardware - robot. You need to override the functions in **MotorController**:
+
+    - *turnLeft()*
+    - *turnRight()*
+    - *turnAround()*
+    - *goStraight()* 
+
+and functions in **SensorController**:
+
+    - *senseLeft()*
+    - *senseRight()*
+    - *senseFront()*
+    - *senseBack()*
+
+Debugging in CORE emulator
 ==========================
 
-Please read *core_demo.py* and *demo.py* to see how to use the framework. 
+
+Replace your Map
+==========================
+In *core_demo.py*, 
+::
+
+	mazeMap = Map(16, 16)
+
+creates a new empty map with height=16 and width=16.
+::
+
+	mazeMap.readFromFile('/home/zhiwei/Micromouse/mazes/2012japan-ef.txt')
+
+loads a map from a text file into micromouse's memory. You may replace the text file with your customized map. The folder *mazes* also includes a set of maps both in text format and a png file which is used for visualization in CORE.
+
+.. image:: ../img/menu_wallpaper.png
+  :height: 200
+
+
+Communications Guide
+==========================
+The communications between micromouses are based on `Socket Programming <https://docs.python.org/2/howto/sockets.html>`_. The network module gives the high level APIs for micromouse to broadcast or receive packets. To use this module, you need to create an instance of NetworkInterface, and initiate the socket:
+
+::
+
+	from network import NetworkInterface
+	self.network = NetworkInterface()
+	self.network.initSocket()
+
+If you need to enable the socket to receive data, you also need to start the receiving thread to prevent blocking the main thread.
+::
+
+	self.network.startReceiveThread()
+
+If you need to send information in string, you can use ``network.sendStringData(your_data)``. For simplicity, you can use a dictionary which is the built-in data structure of Python. The framework will serialize the dictionary to a string to send. For example, usually the micromouses need to broadcast their current locations:
+
+::
+
+	myLocation = {'x': self.mouse.x, 'y': self.mouse.y}
+	self.network.sendStringData(myLocation)
+
+If you need to receive information from your neighboring micromouses, you can use ``network.retrieveData()``.
+::
+	
+	receivedLocation = self.network.retrieveData()
+	print((receivedLocation['x'], receivedLocation['y']))
+
+The broadcasting packets are not only sent to the your neighboring micromouse, **but also sent to yourself**. To distinguish who sends the packet, you can put the unique entity, e.g., IP address of the micromouse, into the packet.
+
+::
+
+	myLocation = {'id': self.network.myIPAddr, x': self.mouse.x, 'y': self.mouse.y}
+	self.network.sendStringData(myLocation)
+	receivedLocation = self.network.retrieveData()
+	if receivedLocation['id'] != self.network.myIPAddr:
+	    print('This packet is not from myself!')
+
+Set the Communication Range
+===========================
+
+Demonstrations
+==========================
 
 *core_demo.py* is used for running the DFS in **CORE**. 
 
