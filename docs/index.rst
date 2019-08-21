@@ -10,8 +10,7 @@ Welcome to Micromouse's documentation!
    :maxdepth: 2
 
    guide/tutorial.rst
-   modules/mouse.rst
-   modules/task.rst
+   modules/docs.rst
 
 Indices and tables
 ==================
