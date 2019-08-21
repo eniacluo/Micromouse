@@ -1,0 +1,429 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Tutorial &#8212; Micromouse Beta documentation</title>
+    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Documentation for the mouse" href="../modules/mouse.html" />
+    <link rel="prev" title="Welcome to Micromouse’s documentation!" href="../index.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../modules/mouse.html" title="Documentation for the mouse"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="../index.html" title="Welcome to Micromouse’s documentation!"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Micromouse Beta documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="tutorial">
+<h1>Tutorial<a class="headerlink" href="#tutorial" title="Permalink to this headline">¶</a></h1>
+<p>To design a new algorithm for running a micromouse, you need to write your own strategy inheriting from class <strong>Strategy</strong> and overrides the functions:</p>
+<blockquote>
+<div><ul class="simple">
+<li><em>checkFinished()</em></li>
+<li><em>go()</em>.</li>
+</ul>
+</div></blockquote>
+<p>Create a python file and write a function to create a micromouse to run.</p>
+<div class="section" id="example">
+<h2>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
+<p>DFS algorithm for one mouse traversing the maze.</p>
+<p>For a basic DFS algorithm for only one mouse running in the maze, you can write a Strategy called <strong>StrategyDFS</strong> which inherits the <strong>Strategy</strong> class and overrides the function <em>checkFinished()</em> and function <em>go()</em>. The function <em>checkFinished()</em> is called because the Task Loader repeatedly check whether the task applying the strategy has finished after calling function <em>go()</em>. The main structure of function <em>run()</em> of Task Loader is as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">run</span><span class="p">():</span>
+    <span class="k">while</span> <span class="ow">not</span> <span class="n">strategy</span><span class="o">.</span><span class="n">checkFinished</span><span class="p">():</span>
+        <span class="n">strategy</span><span class="o">.</span><span class="n">go</span><span class="p">()</span>
+</pre></div>
+</div>
+<p><strong>Step 1</strong>: Write your own strategy inheriting from class Strategy and overrides the function <em>checkFinished()</em> and function <em>go()</em>.</p>
+<p>Let’s suppose we write a class inherits from <strong>Strategy</strong> as follows: (copied from strategy.py -&gt; <strong>StrategyTestDFS</strong>)</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">StrategyTestDFS</span><span class="p">(</span><span class="n">Strategy</span><span class="p">):</span>
+    <span class="n">mouse</span> <span class="o">=</span> <span class="kc">None</span>    <span class="c1"># It is necessary to keep a mouse instance as a member variant of Strategy class</span>
+    <span class="n">isVisited</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># The isVisited is a two-dimensional array marking which cell has been visited by itself or other robots</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="p">[]</span>       <span class="c1"># The path is a stack to track the path that mouse goes through</span>
+    <span class="n">isBack</span> <span class="o">=</span> <span class="kc">False</span>  <span class="c1"># Use a flag to mark whether the mouse has gone back to the origin</span>
+    <span class="n">network</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># The instance of NetworkInterface</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mouse</span><span class="p">):</span>  <span class="c1"># Called when Micromouse add a task with this strategy and it passes instance of itself as the second argument</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mouse</span> <span class="o">=</span> <span class="n">mouse</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">isVisited</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">0</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mouse</span><span class="o">.</span><span class="n">mazeMap</span><span class="o">.</span><span class="n">width</span><span class="p">)]</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mouse</span><span class="o">.</span><span class="n">mazeMap</span><span class="o">.</span><span class="n">height</span><span class="p">)]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">isVisited</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">mouse</span><span class="o">.</span><span class="n">x</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">mouse</span><span class="o">.</span><span class="n">y</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c1"># 1 marks that isVisited[x][y] has been visited</span>
+
+    <span class="k">def</span> <span class="nf">checkFinished</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">isBack</span>      <span class="c1"># The terminating condition is that isBack = 1</span>
+
+    <span class="k">def</span> <span class="nf">go</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Sequentially check four directions, go if there is no wall and has not been visited before</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">mouse</span><span class="o">.</span><span class="n">canGoLeft</span><span class="p">()</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">isVisited</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">mouse</span><span class="o">.</span><span class="n">x</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">mouse</span><span class="o">.</span><span class="n">y</span><span class="p">]:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">mouse</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mouse</span><span class="o">.</span><span class="n">y</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">isVisited</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">mouse</span><span class="o">.</span><span class="n">x</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">mouse</span><span class="o">.</span><span class="n">y</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mouse</span><span class="o">.</span><span class="n">goLeft</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">mouse</span><span class="o">.</span><span class="n">canGoUp</span><span class="p">()</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">isVisited</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">mouse</span><span class="o">.</span><span class="n">x</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">mouse</span><span class="o">.</span><span class="n">y</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">mouse</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mouse</span><span class="o">.</span><span class="n">y</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">isVisited</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">mouse</span><span class="o">.</span><span class="n">x</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">mouse</span><span class="o">.</span><span class="n">y</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mouse</span><span class="o">.</span><span class="n">goUp</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">mouse</span><span class="o">.</span><span class="n">canGoRight</span><span class="p">()</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">isVisited</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">mouse</span><span class="o">.</span><span class="n">x</span><span class="o">+</span><span class="mi">1</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">mouse</span><span class="o">.</span><span class="n">y</span><span class="p">]:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">mouse</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mouse</span><span class="o">.</span><span class="n">y</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">isVisited</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">mouse</span><span class="o">.</span><span class="n">x</span><span class="o">+</span><span class="mi">1</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">mouse</span><span class="o">.</span><span class="n">y</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mouse</span><span class="o">.</span><span class="n">goRight</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">mouse</span><span class="o">.</span><span class="n">canGoDown</span><span class="p">()</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">isVisited</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">mouse</span><span class="o">.</span><span class="n">x</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">mouse</span><span class="o">.</span><span class="n">y</span><span class="o">+</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">mouse</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mouse</span><span class="o">.</span><span class="n">y</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">isVisited</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">mouse</span><span class="o">.</span><span class="n">x</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">mouse</span><span class="o">.</span><span class="n">y</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mouse</span><span class="o">.</span><span class="n">goDown</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># When four directions are either wall or visited, go back one step by popping up path stack</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">x</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">mouse</span><span class="o">.</span><span class="n">x</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">mouse</span><span class="o">.</span><span class="n">goLeft</span><span class="p">()</span>
+                <span class="k">elif</span> <span class="n">x</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">mouse</span><span class="o">.</span><span class="n">x</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">mouse</span><span class="o">.</span><span class="n">goRight</span><span class="p">()</span>
+                <span class="k">elif</span> <span class="n">y</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">mouse</span><span class="o">.</span><span class="n">y</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">mouse</span><span class="o">.</span><span class="n">goUp</span><span class="p">()</span>
+                <span class="k">elif</span> <span class="n">y</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">mouse</span><span class="o">.</span><span class="n">y</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">mouse</span><span class="o">.</span><span class="n">goDown</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># The stack being empty means that mouse has gone back to the origin</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">isBack</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="n">sleep</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span> <span class="c1"># Delay for better demonstration</span>
+</pre></div>
+</div>
+<p>Write a function to create a micromouse to run.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">map</span> <span class="k">import</span> <span class="n">Map</span><span class="p">;</span>
+<span class="kn">from</span> <span class="nn">mouse</span> <span class="k">import</span> <span class="n">Micromouse</span><span class="p">;</span>
+<span class="kn">from</span> <span class="nn">strategy</span> <span class="k">import</span> <span class="n">StrategyTestDFS</span><span class="p">;</span>
+
+<span class="k">def</span> <span class="nf">myMouse</span><span class="p">():</span>
+    <span class="n">mazeMap</span> <span class="o">=</span> <span class="n">Map</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">16</span><span class="p">)</span>                           <span class="c1"># Specify the size of maze map: height and width.</span>
+    <span class="n">micromouse</span> <span class="o">=</span> <span class="n">Micromouse</span><span class="p">(</span><span class="n">mazeMap</span><span class="p">)</span>                <span class="c1"># Create a micromouse with the empty map</span>
+    <span class="n">micromouse</span><span class="o">.</span><span class="n">setInitPoint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>                   <span class="c1"># Tell the micromouse the origin coordinate</span>
+    <span class="n">micromouse</span><span class="o">.</span><span class="n">addTask</span><span class="p">(</span><span class="n">StrategyTestDFS</span><span class="p">(</span><span class="n">micromouse</span><span class="p">))</span> <span class="c1"># Use the created Strategy with this micromouse instance to add a Task</span>
+    <span class="n">micromouse</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>                                <span class="c1"># The TaskLoader will run the tasks you have added</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="customized-platforms">
+<h2>Customized Platforms<a class="headerlink" href="#customized-platforms" title="Permalink to this headline">¶</a></h2>
+<p>If you are going to demonstrate in CORE or EV3, you can directly utilize the <strong>COREController</strong> and <strong>EV3MotorController</strong>, <strong>EV3SensorController</strong> in <em>controller.py</em> and skip this step. The mentioned functions are atomic procedures for Task Layer to call so that when writting a strategy, you can just call <em>senseWalls()</em>, <em>goLeft()</em>, <em>goRight()</em>, <em>goUp()</em> or <em>goDown()</em> in <strong>Micromouse</strong> class without considering the direction it faces and writing code of manipulating the hardware.</p>
+<p>If you have your own hardware platform or emulation software, write your own MotorController inheriting from class <strong>MotorController</strong> and <strong>SensorController</strong> for your hardware - robot. You need to override the functions in <strong>MotorController</strong>:</p>
+<blockquote>
+<div><ul class="simple">
+<li><em>turnLeft()</em></li>
+<li><em>turnRight()</em></li>
+<li><em>turnAround()</em></li>
+<li><em>goStraight()</em></li>
+</ul>
+</div></blockquote>
+<p>and functions in <strong>SensorController</strong>:</p>
+<blockquote>
+<div><ul class="simple">
+<li><em>senseLeft()</em></li>
+<li><em>senseRight()</em></li>
+<li><em>senseFront()</em></li>
+<li><em>senseBack()</em></li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="debugging-in-core-emulator">
+<h2>Debugging in CORE emulator<a class="headerlink" href="#debugging-in-core-emulator" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="replace-your-map">
+<h2>Replace your Map<a class="headerlink" href="#replace-your-map" title="Permalink to this headline">¶</a></h2>
+<p>In <em>core_demo.py</em>,</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mazeMap</span> <span class="o">=</span> <span class="n">Map</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">16</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>creates a new empty map with height=16 and width=16.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mazeMap</span><span class="o">.</span><span class="n">readFromFile</span><span class="p">(</span><span class="s1">&#39;/home/zhiwei/Micromouse/mazes/2012japan-ef.txt&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>loads a map from a text file into micromouse’s memory. You may replace the text file with your customized map. The folder <em>mazes</em> also includes a set of maps both in text format and a png file which is used for visualization in CORE.</p>
+<a class="reference internal image-reference" href="../_images/menu_wallpaper.png"><img alt="../_images/menu_wallpaper.png" src="../_images/menu_wallpaper.png" style="height: 200px;" /></a>
+</div>
+<div class="section" id="communications-guide">
+<h2>Communications Guide<a class="headerlink" href="#communications-guide" title="Permalink to this headline">¶</a></h2>
+<p>The communications between micromouses are based on <a class="reference external" href="https://docs.python.org/2/howto/sockets.html">Socket Programming</a>. The network module gives the high level APIs for micromouse to broadcast or receive packets. To use this module, you need to create an instance of NetworkInterface, and initiate the socket:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">network</span> <span class="k">import</span> <span class="n">NetworkInterface</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">network</span> <span class="o">=</span> <span class="n">NetworkInterface</span><span class="p">()</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">network</span><span class="o">.</span><span class="n">initSocket</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>If you need to enable the socket to receive data, you also need to start the receiving thread to prevent blocking the main thread.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="bp">self</span><span class="o">.</span><span class="n">network</span><span class="o">.</span><span class="n">startReceiveThread</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>If you need to send information in string, you can use <code class="docutils literal notranslate"><span class="pre">network.sendStringData(your_data)</span></code>. For simplicity, you can use a dictionary which is the built-in data structure of Python. The framework will serialize the dictionary to a string to send. For example, usually the micromouses need to broadcast their current locations:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">myLocation</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;x&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">mouse</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">mouse</span><span class="o">.</span><span class="n">y</span><span class="p">}</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">network</span><span class="o">.</span><span class="n">sendStringData</span><span class="p">(</span><span class="n">myLocation</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>If you need to receive information from your neighboring micromouses, you can use <code class="docutils literal notranslate"><span class="pre">network.retrieveData()</span></code>.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">receivedLocation</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">network</span><span class="o">.</span><span class="n">retrieveData</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">((</span><span class="n">receivedLocation</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">],</span> <span class="n">receivedLocation</span><span class="p">[</span><span class="s1">&#39;y&#39;</span><span class="p">]))</span>
+</pre></div>
+</div>
+<p>The broadcasting packets are not only sent to the your neighboring micromouse, <strong>but also sent to yourself</strong>. To distinguish who sends the packet, you can put the unique entity, e.g., IP address of the micromouse, into the packet.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">myLocation</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">network</span><span class="o">.</span><span class="n">myIPAddr</span><span class="p">,</span> <span class="n">x</span><span class="s1">&#39;: self.mouse.x, &#39;</span><span class="n">y</span><span class="s1">&#39;: self.mouse.y}</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">network</span><span class="o">.</span><span class="n">sendStringData</span><span class="p">(</span><span class="n">myLocation</span><span class="p">)</span>
+<span class="n">receivedLocation</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">network</span><span class="o">.</span><span class="n">retrieveData</span><span class="p">()</span>
+<span class="k">if</span> <span class="n">receivedLocation</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">network</span><span class="o">.</span><span class="n">myIPAddr</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;This packet is not from myself!&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="set-the-communication-range">
+<h2>Set the Communication Range<a class="headerlink" href="#set-the-communication-range" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="demonstrations">
+<h2>Demonstrations<a class="headerlink" href="#demonstrations" title="Permalink to this headline">¶</a></h2>
+<p><em>core_demo.py</em> is used for running the DFS in <strong>CORE</strong>.</p>
+<p><em>demo.py</em> is used for running the DFS in <strong>EV3</strong>.</p>
+<div class="section" id="run-in-core">
+<h3>Run in CORE<a class="headerlink" href="#run-in-core" title="Permalink to this headline">¶</a></h3>
+<p>First make sure that CORE has been installed. If you have not installed CORE, follow <a class="reference external" href="https://docs.google.com/document/d/1LPkPc2lbStwFtiukYfCxhcW7KewD028XzNfMd20uFFA/">https://docs.google.com/document/d/1LPkPc2lbStwFtiukYfCxhcW7KewD028XzNfMd20uFFA/</a> to install.</p>
+<p>Download the Micromouse framework from <a class="reference external" href="https://github.com/eniacluo/Micromouse">https://github.com/eniacluo/Micromouse</a>. DO NOT only download the framework folder because the maze file examples are not included.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ cd /path/you/downloaded/Micromouse
+</pre></div>
+</div>
+<p><strong>WARNING</strong>: DO NOT make your path of Micromouse framework too long and sometimes it does not work if there are <em>special characters</em> like ‘_’, ‘-‘, ‘/’ in the full path.</p>
+<p>Configure the CORE environment for running <em>core_demo.py</em></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ sudo ./setCORE.sh
+</pre></div>
+</div>
+<p>If you encounter any problems running the above script, you may need to <a class="reference internal" href="#manually">manually</a> <a class="reference internal" href="#configure">configure</a> the environment for CORE.</p>
+<p>Open CORE to demonstrate:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ core-gui
+</pre></div>
+</div>
+<p>Then open maze.xml, click the <strong>Start session</strong> button.</p>
+<p>Visualize the exploring results:</p>
+<p>Install python3-tk:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ sudo apt-get install python3-tk
+</pre></div>
+</div>
+<p>Open the display.py before starting a session:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ python3 display.py
+</pre></div>
+</div>
+<p>Use <em>Ctrl + C</em> to terminate.</p>
+</div>
+<div class="section" id="run-in-ev3">
+<h3>Run in EV3<a class="headerlink" href="#run-in-ev3" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ nano controller.py
+</pre></div>
+</div>
+<p>Uncomment this line: <code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">ev3dev.ev3</span> <span class="pre">import</span> <span class="pre">*</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ nano demo.py
+</pre></div>
+</div>
+<p>Change the size to match your maze:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mazeMap</span> <span class="o">=</span> <span class="n">Map</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Specify the direction it faces at the beginning, <em>UP</em> is default:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">micromouse</span><span class="o">.</span><span class="n">setInitDirection</span><span class="p">(</span><span class="s2">&quot;UP&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Set the initial coordinate x, y:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">micromouse</span><span class="o">.</span><span class="n">setInitPoint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Add the task with written <strong>Strategy</strong> instance:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">micromouse</span><span class="o">.</span><span class="n">addTask</span><span class="p">(</span><span class="n">StrategyTestMultiDFS</span><span class="p">(</span><span class="n">micromouse</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>Download the framework folder into the EV3 robot.</p>
+<p>Press the center button of EV3 to boot and wait until the main menu appears. Choose File <em>browser-&gt;demo.py</em>. Click the center button to start. The light may turn orange if everything is good. It is not necessarily that two mice start at exactly the same time.</p>
+</div>
+<div class="section" id="manually-configure-core">
+<span id="configure"></span><span id="manually"></span><h3>Manually Configure CORE<a class="headerlink" href="#manually-configure-core" title="Permalink to this headline">¶</a></h3>
+<p>Let the MDR node runs Micromouse automatically by adding a customized service.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ sudo nano /etc/core/core.conf
+</pre></div>
+</div>
+<p>Uncomment the line of <em>custom_services_dir</em> and set:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">custom_services_dir</span> <span class="o">=</span> <span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">you</span><span class="o">/</span><span class="n">downloaded</span><span class="o">/</span><span class="n">Micromouse</span>
+<span class="n">listenaddr</span> <span class="o">=</span> <span class="mf">0.0</span><span class="o">.</span><span class="mf">0.0</span>
+</pre></div>
+</div>
+<p>Save and Exit.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ cd /path/you/downloaded/Micromouse
+$ nano ./preload.py
+</pre></div>
+</div>
+<p>Modify this line:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">_startup</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;/path/you/downloaded/Micromouse/backservice.sh&#39;</span><span class="p">,)</span>
+</pre></div>
+</div>
+<p>Save and Exit.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ nano ./backservice.sh
+</pre></div>
+</div>
+<p>Modify this line:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">export</span> <span class="n">ServiceHOME</span><span class="o">=/</span><span class="n">path</span><span class="o">/</span><span class="n">you</span><span class="o">/</span><span class="n">downloaded</span><span class="o">/</span><span class="n">Micromouse</span><span class="o">/</span><span class="n">framework</span>
+</pre></div>
+</div>
+<p>Save and Exit.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ nano ~/.core/nodes.conf
+</pre></div>
+</div>
+<p>Modify line 4: Add a <strong>MyService</strong>.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span> <span class="n">mdr</span> <span class="n">mdr</span><span class="o">.</span><span class="n">gif</span> <span class="n">mdr</span><span class="o">.</span><span class="n">gif</span> <span class="p">{</span><span class="n">zebra</span> <span class="n">OSPFv3MDR</span> <span class="n">vtysh</span> <span class="n">IPForward</span> <span class="n">MyService</span><span class="p">}</span>  <span class="n">netns</span> <span class="p">{</span><span class="n">built</span><span class="o">-</span><span class="ow">in</span> <span class="nb">type</span> <span class="k">for</span> <span class="n">wireless</span> <span class="n">routers</span><span class="p">}</span> <span class="p">}</span>
+</pre></div>
+</div>
+<p>Save and Exit.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ chmod 755 __init__.py preload.py backservice.sh
+</pre></div>
+</div>
+<p><strong>To check whether the Micromouse service has been added, restart core-daemon and open CORE:</strong></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ sudo service core-daemon restart
+$ core-gui
+</pre></div>
+</div>
+<p>Add a <strong>MDR</strong> node into the canvas and right-click the node, click <em>Serivce</em>. Now you can see <em>MyService</em> is appearing in the column of <em>Utility</em> and it has been enabled. Click the tool icon on the right of <em>MyService</em> and click the <em>Startup/shutdown</em> tab, you can see the complete path of <em>backservice.sh</em> is shown in the middle <em>Startup Commands</em> list. That marks the correct configurations of CORE.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ nano ./maze.xml
+</pre></div>
+</div>
+<p>Change paths of 4 icons:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;icon&quot;</span> <span class="n">value</span><span class="o">=</span><span class="s2">&quot;/path/you/downloaded/Micromouse/icons/robot***.png&quot;</span>
+</pre></div>
+</div>
+<p>Change path of wallpaper:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">wallpaper</span> <span class="p">{</span><span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">you</span><span class="o">/</span><span class="n">downloaded</span><span class="o">/</span><span class="n">Micromouse</span><span class="o">/</span><span class="n">mazes</span><span class="o">/</span><span class="mi">2012</span><span class="n">japan</span><span class="o">-</span><span class="n">ef</span><span class="o">.</span><span class="n">png</span><span class="p">}</span>
+</pre></div>
+</div>
+<p>Save and Exit.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ nano framework/core_demo.py
+</pre></div>
+</div>
+<p>Change path of maze file:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mazeMap</span><span class="o">.</span><span class="n">readFromFile</span><span class="p">(</span><span class="s1">&#39;/path/you/downloaded/Micromouse/mazes/2012japan-ef.txt&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Open CORE to demonstrate:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ core-gui
+</pre></div>
+</div>
+<p>Then open <em>maze.xml</em>, click the <strong>Start session</strong> button.</p>
+</div>
+</div>
+<div class="section" id="documentation-for-framework">
+<h2>Documentation for framework<a class="headerlink" href="#documentation-for-framework" title="Permalink to this headline">¶</a></h2>
+<p>The detailed descriptions including the architecture are provided in <a class="reference external" href="https://docs.google.com/document/d/1im-nFw-iO0sKvpq5XH-agR5obBuFwbSLMbefUWsbebQ/edit?usp=sharing">https://docs.google.com/document/d/1im-nFw-iO0sKvpq5XH-agR5obBuFwbSLMbefUWsbebQ/edit?usp=sharing</a>. If you have any questions, please mail to <a class="reference external" href="mailto:eniacsimon&#37;&#52;&#48;gmail&#46;com">eniacsimon<span>&#64;</span>gmail<span>&#46;</span>com</a> to get help.</p>
+<ul class="simple">
+<li><a class="reference internal" href="../genindex.html"><span class="std std-ref">Index</span></a></li>
+<li><a class="reference internal" href="../py-modindex.html"><span class="std std-ref">Module Index</span></a></li>
+<li><a class="reference internal" href="../search.html"><span class="std std-ref">Search Page</span></a></li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Tutorial</a><ul>
+<li><a class="reference internal" href="#example">Example</a></li>
+<li><a class="reference internal" href="#customized-platforms">Customized Platforms</a></li>
+<li><a class="reference internal" href="#debugging-in-core-emulator">Debugging in CORE emulator</a></li>
+<li><a class="reference internal" href="#replace-your-map">Replace your Map</a></li>
+<li><a class="reference internal" href="#communications-guide">Communications Guide</a></li>
+<li><a class="reference internal" href="#set-the-communication-range">Set the Communication Range</a></li>
+<li><a class="reference internal" href="#demonstrations">Demonstrations</a><ul>
+<li><a class="reference internal" href="#run-in-core">Run in CORE</a></li>
+<li><a class="reference internal" href="#run-in-ev3">Run in EV3</a></li>
+<li><a class="reference internal" href="#manually-configure-core">Manually Configure CORE</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#documentation-for-framework">Documentation for framework</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="../index.html"
+                        title="previous chapter">Welcome to Micromouse’s documentation!</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="../modules/mouse.html"
+                        title="next chapter">Documentation for the mouse</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/guide/tutorial.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../modules/mouse.html" title="Documentation for the mouse"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="../index.html" title="Welcome to Micromouse’s documentation!"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Micromouse Beta documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2019, Zhiwei Luo.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.4.
+    </div>
+  </body>
+</html>
