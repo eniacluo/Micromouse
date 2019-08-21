@@ -1,0 +1,6 @@
+Documentation for the mouse
+***************************
+
+.. automodule:: mouse
+
+.. autoclass:: Micromouse

@@ -1,0 +1,258 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Documentation for the mouse &#8212; Micromouse Beta documentation</title>
+    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Documentation for the map" href="task.html" />
+    <link rel="prev" title="Welcome to Micromouse’s documentation!" href="../index.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="task.html" title="Documentation for the map"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="../index.html" title="Welcome to Micromouse’s documentation!"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Micromouse Beta documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-mouse">
+<span id="documentation-for-the-mouse"></span><h1>Documentation for the mouse<a class="headerlink" href="#module-mouse" title="Permalink to this headline">¶</a></h1>
+<p><em>mouse</em> module contains <em>class</em> <strong>Micromouse</strong>.</p>
+<dl class="class">
+<dt id="mouse.Micromouse">
+<em class="property">class </em><code class="descclassname">mouse.</code><code class="descname">Micromouse</code><span class="sig-paren">(</span><em>mazeMap</em><span class="sig-paren">)</span><a class="headerlink" href="#mouse.Micromouse" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>The Micromouse represents an agent to perfrom tasks. It maintains:</dt>
+<dd><ul class="first last simple">
+<li>the location in a maze: <em>x</em>, <em>y</em></li>
+<li>a local <em>map</em></li>
+<li>a <em>task loader</em></li>
+<li>the <em>direction</em> it faces: “UP”, “DOWN”, “LEFT”, or “RIGHT”</li>
+</ul>
+</dd>
+</dl>
+<p>Before creating a new <strong>Micromouse</strong>, you may need to create an empty maze map and put this map to create the Micromouse.</p>
+<dl class="method">
+<dt id="mouse.Micromouse.addTask">
+<code class="descname">addTask</code><span class="sig-paren">(</span><em>strategy</em><span class="sig-paren">)</span><a class="headerlink" href="#mouse.Micromouse.addTask" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add one task to the task list such that task loader will execute the tasks in sequence.</p>
+<p>The task is the wrapper of a strategy. You need to put your Strategy as argument.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mouse.Micromouse.canGoDown">
+<code class="descname">canGoDown</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#mouse.Micromouse.canGoDown" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return True if there is no wall below your micromouse, and False vice versa.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mouse.Micromouse.canGoLeft">
+<code class="descname">canGoLeft</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#mouse.Micromouse.canGoLeft" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return True if there is no wall on the left of your micromouse, and False vice versa.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mouse.Micromouse.canGoRight">
+<code class="descname">canGoRight</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#mouse.Micromouse.canGoRight" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return True if there is no wall on the right of your micromouse, and False vice versa.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mouse.Micromouse.canGoUp">
+<code class="descname">canGoUp</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#mouse.Micromouse.canGoUp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return True if there is no wall above your micromouse, and False vice versa.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mouse.Micromouse.goDown">
+<code class="descname">goDown</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#mouse.Micromouse.goDown" title="Permalink to this definition">¶</a></dt>
+<dd><p>Go Down to the immediate cell of your current location.</p>
+<p>As a result, y := y + 1 and direction will be “DOWN”.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mouse.Micromouse.goLeft">
+<code class="descname">goLeft</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#mouse.Micromouse.goLeft" title="Permalink to this definition">¶</a></dt>
+<dd><p>Go to the Left immediate cell of your current location.</p>
+<p>As a result, x := x - 1 and direction will be “LEFT”.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mouse.Micromouse.goRight">
+<code class="descname">goRight</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#mouse.Micromouse.goRight" title="Permalink to this definition">¶</a></dt>
+<dd><p>Go to the Right immediate cell of your current location.</p>
+<p>As a result, x := x + 1 and direction will be “RIGHT”.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mouse.Micromouse.goUp">
+<code class="descname">goUp</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#mouse.Micromouse.goUp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Go up to the immediate cell of your current location.</p>
+<p>As a result, y := y - 1 and direction will be “UP”.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mouse.Micromouse.run">
+<code class="descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#mouse.Micromouse.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>Start to run your tasks by your strategies in the maze.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mouse.Micromouse.senseWalls">
+<code class="descname">senseWalls</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#mouse.Micromouse.senseWalls" title="Permalink to this definition">¶</a></dt>
+<dd><p>Use Wall Detector to detector the surrounding walls. If sensors find the walls, the micromouse will update the local map.</p>
+<p>You may need to call this function when your micromouse arrives at a cell that has never been visited.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mouse.Micromouse.setInitDirection">
+<code class="descname">setInitDirection</code><span class="sig-paren">(</span><em>direction='UP'</em><span class="sig-paren">)</span><a class="headerlink" href="#mouse.Micromouse.setInitDirection" title="Permalink to this definition">¶</a></dt>
+<dd><p>The initial direction you put micromouse in the maze.</p>
+<p>The direction should be “UP”, “DOWN”, “LEFT”, or “RIGHT”.
+The <strong>default</strong> direction is <em>“UP”</em>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mouse.Micromouse.setInitPoint">
+<code class="descname">setInitPoint</code><span class="sig-paren">(</span><em>x=-1</em>, <em>y=-1</em><span class="sig-paren">)</span><a class="headerlink" href="#mouse.Micromouse.setInitPoint" title="Permalink to this definition">¶</a></dt>
+<dd><p>The initial location (x, y) you put micromouse in the map of a maze.</p>
+<p>The coordinate system set the left-top corner as (0, 0):</p>
+<blockquote>
+<div><table border="1" class="docutils">
+<colgroup>
+<col width="33%" />
+<col width="33%" />
+<col width="33%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>(0,0)</td>
+<td>(1,0)</td>
+<td>(2,0)</td>
+</tr>
+<tr class="row-even"><td>(0,1)</td>
+<td>(1,1)</td>
+<td>…</td>
+</tr>
+<tr class="row-odd"><td>(0,2)</td>
+<td>…</td>
+<td>…</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<p>The x, y will be set failed if it is out of the boundary of maze map.
+The <strong>default</strong> location is (-1, -1).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mouse.Micromouse.setMotorController">
+<code class="descname">setMotorController</code><span class="sig-paren">(</span><em>motorController</em><span class="sig-paren">)</span><a class="headerlink" href="#mouse.Micromouse.setMotorController" title="Permalink to this definition">¶</a></dt>
+<dd><p>Specify the MotorController for this micromouse.</p>
+<p>Your MotorController should inherit the <em>class</em> <strong>MotorController</strong> and overrides the function <em>turnLeft()</em>, <em>turnRight()</em>, <em>turnAround()</em>, <em>goStraight()</em>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mouse.Micromouse.setSensorController">
+<code class="descname">setSensorController</code><span class="sig-paren">(</span><em>sensorController</em><span class="sig-paren">)</span><a class="headerlink" href="#mouse.Micromouse.setSensorController" title="Permalink to this definition">¶</a></dt>
+<dd><p>Specify the SensorController for this micromouse.</p>
+<p>Your SensorController should inherit the <em>class</em> <strong>SensorController</strong> and overrides the function <em>senseLeft()</em>, <em>senseRight()</em>, <em>senseUp()</em>, <em>senseDown()</em>.</p>
+</dd></dl>
+
+</dd></dl>
+
+<ul class="simple">
+<li><a class="reference internal" href="../genindex.html"><span class="std std-ref">Index</span></a></li>
+<li><a class="reference internal" href="../py-modindex.html"><span class="std std-ref">Module Index</span></a></li>
+<li><a class="reference internal" href="../search.html"><span class="std std-ref">Search Page</span></a></li>
+</ul>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="../index.html"
+                        title="previous chapter">Welcome to Micromouse’s documentation!</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="task.html"
+                        title="next chapter">Documentation for the map</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/modules/mouse.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="task.html" title="Documentation for the map"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="../index.html" title="Welcome to Micromouse’s documentation!"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Micromouse Beta documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2019, Zhiwei Luo.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.4.
+    </div>
+  </body>
+</html>
