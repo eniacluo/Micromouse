@@ -134,10 +134,10 @@ Install python3-tk:
 
     $ sudo apt-get install python3-tk
 
-Open the display.py before starting a session:
+Open the *gui.py* before starting a session:
 ::
 
-    $ python3 display.py
+    $ python3 gui.py
 
 Use *Ctrl + C* to terminate.
 
