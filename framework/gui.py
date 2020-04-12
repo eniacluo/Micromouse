@@ -88,17 +88,20 @@ if __name__ == '__main__':
 	network.initSocket()
 	network.startReceiveThread()
 
+	colorList = ['red', 'yellow', 'blue', 'green']
+	ipList = []
+
 	while True:
 		recvData = network.retrieveData()
 		if recvData:
-			otherMap = recvData
+			otherMap = recvData['data']
+			otherIP = recvData['ip']
+			if otherIP not in ipList:
+				ipList.append(otherIP)
 			cell = mazeMap.getCell(otherMap['x'], otherMap['y'])
 			if otherMap['up']: mazeMap.setCellUpAsWall(cell)
 			if otherMap['down']: mazeMap.setCellDownAsWall(cell)
 			if otherMap['left']: mazeMap.setCellLeftAsWall(cell)
 			if otherMap['right']: mazeMap.setCellRightAsWall(cell)
 			mapPainter.drawCell(cell, 'grey')
-			mapPainter.putRobotInCell(lastCell)
-			mapPainter.putRobotInCell(cell, 'yellow')
-			lastCell = cell
-			print('('+str(otherMap['x'])+', '+str(otherMap['y'])+')  up:'+str(otherMap['up'])+',down:'+str(otherMap['down'])+',left:'+str(otherMap['left'])+'right:'+str(otherMap['right']))
+			mapPainter.putRobotInCell(cell, colorList[ipList.index(otherIP)])

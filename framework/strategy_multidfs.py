@@ -31,7 +31,7 @@ class StrategyMultiDFS(Strategy):
 		self.network.sendStringData(sendData)
 		recvData = self.network.retrieveData()
 		while recvData:
-			otherMap = recvData
+			otherMap = recvData['data']
 			cell = self.mouse.mazeMap.getCell(otherMap['x'], otherMap['y'])
 			self.isVisited[otherMap['x']][otherMap['y']] = 1
 			if otherMap['up']: self.mouse.mazeMap.setCellUpAsWall(cell)

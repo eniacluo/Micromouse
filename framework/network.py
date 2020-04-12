@@ -38,29 +38,18 @@ class NetworkInterface:
     def setTimeout(self, seconds):
         self.socketUdp.settimeout(seconds)
 
-    def receiveData(self):
-        #while not self.contextMouse.isEndNetwork:
-        try:
-            str, addr = self.socketUdp.recvfrom(1000)
-            self.bufferList.append((str, addr))
-            return (str, addr)
-        except:
-            print('Receive Data Failed!')
-            return None
-
     def retrieveData(self):
         if len(self.bufferList) > 0:
-            recvData = self.bufferList[0]
+            recvData = {'data': pickle.loads(self.bufferList[0][0]), 'ip': self.bufferList[0][1]}
             self.bufferList = self.bufferList[1:]
-            return pickle.loads(recvData)
+            return recvData 
         else:
             return None
 
     def receiveDataThread(self):
-        #while not self.contextMouse.isEndNetwork:
         while True:
-            str, addr = self.socketUdp.recvfrom(1000)
-            self.bufferList.append(str)
+            str_data, addr = self.socketUdp.recvfrom(1000)
+            self.bufferList.append((str_data, addr))
 
     def startReceiveThread(self):
         self.threadReceive = threading.Thread(name='receive', target=self.receiveDataThread)
